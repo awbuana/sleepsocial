@@ -2,7 +2,7 @@ require_relative "../../config/environment"
 
 # --- Configuration ---
 NUM_USERS = 1000
-MAX_FOLLOWS_PER_USER = 500
+MAX_FOLLOWS_PER_USER = 20
 
 puts "Generating #{NUM_USERS} users and follow relationships using ActiveRecord..."
 
@@ -14,8 +14,6 @@ NUM_USERS.times do |i|
   begin
     user = User.create!(
       name: Faker::Name.unique.name,
-      created_at: Time.now.utc - rand(0..365).days - rand(0..23).hours - rand(0..59).minutes,
-      updated_at: Time.now.utc - rand(0..365).days - rand(0..23).hours - rand(0..59).minutes
     )
     user_ids << user.id
     print "." if (i + 1) % 100 == 0 # Progress indicator
@@ -50,12 +48,9 @@ user_ids.each_with_index do |user_id, index|
 
     unless generated_follows[user_id].include?(target_user_id)
       begin
-        Follow.create!(
-          user_id: user_id,
-          target_user_id: target_user_id,
-          created_at: Time.now.utc - rand(0..365).days - rand(0..23).hours - rand(0..59).minutes,
-          updated_at: Time.now.utc - rand(0..365).days - rand(0..23).hours - rand(0..59).minutes
-        )
+        user = User.find(user_id)
+        FollowService.follow(user, target_user_id)
+
         generated_follows[user_id] << target_user_id
         follow_count += 1
       rescue ActiveRecord::RecordInvalid => e
