@@ -1,12 +1,18 @@
 class SleepLogsController < ApplicationController
   before_action :set_sleep_log, only: %i[ show clock_out ]
+  before_action :authenticate!, only: %i[ create clock_out ]
 
   # GET /sleep_logs
   def index
     permitted = params.permit(:limit, :after, :before).to_h.symbolize_keys
     permitted[:limit] = permitted[:limit].to_i if permitted[:limit]
 
-    paginator = SleepLog.all.cursor_paginate(**permitted)
+    paginator =  if current_user
+      SleepLog.where(user_id: current_user.id).cursor_paginate(**permitted)
+    else
+      SleepLog.all.cursor_paginate(**permitted)
+    end
+
     page = paginator.fetch
 
     render_serializer page.records, SleepLogSerializer, meta: {
@@ -22,7 +28,7 @@ class SleepLogsController < ApplicationController
 
   # POST /sleep_logs
   def create
-    @sleep_log = SleepLogService.create_log(current_user)
+    @sleep_log = SleepLogService.create_log(current_user, params.permit(:clock_in, :clock_out))
     render_serializer @sleep_log, SleepLogSerializer, status: :created
   end
 
@@ -30,7 +36,13 @@ class SleepLogsController < ApplicationController
   def clock_out
     raise Sleepsocial::ValidationError.new("User already clocked out") if @sleep_log.clock_out
 
-    @sleep_log.update!(clock_out: Time.now)
+    clock_out = if params[:clock_out].present?
+      Time.parse(params[:clock_out])
+    else
+      Time.now.utc
+    end
+
+    @sleep_log.update!(clock_out:  clock_out)
 
     render_serializer @sleep_log, SleepLogSerializer
   end
@@ -44,11 +56,5 @@ class SleepLogsController < ApplicationController
 
   def update_sleep_log_params
     params.expect(sleep_log: [ :clock_out ])
-  end
-
-  def current_user
-    raise Sleepsocial::NotPermittedError.new("user_id must be present") unless params[:user_id]
-
-    @current_user ||= User.find(params[:user_id])
   end
 end

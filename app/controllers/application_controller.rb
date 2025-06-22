@@ -1,6 +1,22 @@
 class ApplicationController < ActionController::API
   include ErrorHandling
 
+  def current_user
+    return @current_user if defined?(@current_user)
+
+    user_id = request.headers["X-USER-ID"]
+
+    @current_user = if user_id.present?
+      User.find(user_id)
+    else
+      nil
+    end
+  end
+
+  def authenticate!
+    raise Sleepsocial::NotPermittedError.new("User must login") unless current_user
+  end
+
   def render_serializer(resource, serializer, **options)
     if resource.kind_of?(Array)
       serializable = ActiveModelSerializers::SerializableResource.new(resource, each_serializer: serializer, root: :data, **options).to_json
