@@ -8,6 +8,10 @@ module ErrorHandling
       render json: { error: e.message }, status: 401
     end
 
+    rescue_from Sleepsocial::PermissionDeniedError do |e|
+      render json: { error: e.message }, status: 403
+    end
+
     rescue_from ActiveRecord::RecordInvalid, BaseService::ServiceError do |e|
       render json: { error: e.message }, status: 422
     end

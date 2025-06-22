@@ -1,5 +1,5 @@
 module SleepLogService
-  class CreateLog < ::BaseService
+  class CreateLog < SleepLogService::Base
     def initialize(user, params, options = {})
       @user = user
       @clock_in = params[:clock_in]
@@ -34,8 +34,7 @@ module SleepLogService
     private
 
     def validate!
-      # add some buffer
-      now = Time.now.utc + 15.seconds
+      now = now_with_buffer
       raise SleepLogService::Error.new("Clock in must be lower than #{now}") if @clock_in > now
       raise SleepLogService::Error.new("Clock out must be lower than #{now}") if @clock_out && @clock_out > now
     end

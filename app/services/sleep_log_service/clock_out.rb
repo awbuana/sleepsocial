@@ -1,5 +1,5 @@
 module SleepLogService
-  class ClockOut < ::BaseService
+  class ClockOut < SleepLogService::Base
     def initialize(user, sleep_log, clock_out, options = {})
       @user = user
       @sleep_log = sleep_log
@@ -27,7 +27,9 @@ module SleepLogService
       raise Sleepsocial::PermissionDeniedError if @sleep_log.user_id != @user.id
       raise SleepLogService::Error.new("Clock out must be present") unless @clock_out
       raise SleepLogService::Error.new("User already clocked out") if @sleep_log.clock_out
-      raise SleepLogService::Error.new("Clock out must be lower than now") if @clock_out > Time.now.utc + 15.seconds # buffer
+
+      now = now_with_buffer
+      raise SleepLogService::Error.new("Clock out must be lower than #{now}") if @clock_out > now
     end
   end
 end
