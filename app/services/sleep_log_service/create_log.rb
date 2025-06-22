@@ -13,6 +13,7 @@ module SleepLogService
         raise SleepLogService::Error.new('User must clock out pending log first') if pending_log
 
         log.user = @user
+        log.clock_in = Time.now.utc
         log.save!
 
         log
