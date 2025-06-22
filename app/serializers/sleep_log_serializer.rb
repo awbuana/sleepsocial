@@ -3,5 +3,6 @@ class SleepLogSerializer < ActiveModel::Serializer
   attribute :user_id
   attribute :clock_in
   attribute :clock_out
+  attribute :sleep_duration
   attribute :created_at
 end

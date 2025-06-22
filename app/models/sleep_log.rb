@@ -10,4 +10,8 @@ class SleepLog < ApplicationRecord
       errors.add(:clock_out, "must be greater than clock in")
     end
   end
+
+  def sleep_duration
+    (clock_out - clock_in).seconds.in_hours.to_i
+  end
 end

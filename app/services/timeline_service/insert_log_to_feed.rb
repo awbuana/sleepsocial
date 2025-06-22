@@ -6,6 +6,9 @@ module TimelineService
     end
 
     def perform
+      # only show finished sleep log
+      return unless @sleep_log.clock_out.present?
+
       user_feed = UserFeed.new(@user)
       user_feed.add_to_feed(@sleep_log)
     end
