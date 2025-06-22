@@ -7,7 +7,7 @@ gem "mysql2", ">= 0.5.5"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
-gem 'redis-client'
+gem "redis-client"
 
 gem "active_model_serializers", "~> 0.10"
 gem "activerecord_cursor_paginate"

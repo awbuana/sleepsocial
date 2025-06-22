@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     post "clock-out", on: :member
   end
 
-  resources :follows, :except => [:update, :destroy] do
+  resources :follows, except: [ :update, :destroy ] do
     delete "/", on: :collection, to: "follows#destroy"
   end
 

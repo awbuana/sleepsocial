@@ -34,7 +34,7 @@ module Sleepsocial
     config.action_controller.action_on_unpermitted_parameters = false
 
     config.lograge.enabled = true
-    config.lograge.base_controller_class = 'ActionController::API'
+    config.lograge.base_controller_class = "ActionController::API"
     config.lograge.formatter = Lograge::Formatters::Logstash.new
   end
 end

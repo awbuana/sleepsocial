@@ -49,7 +49,7 @@ class SleepLogsController < ApplicationController
   end
 
   def current_user
-    raise Sleepsocial::NotPermittedError.new('user_id must be present') unless params[:user_id]
+    raise Sleepsocial::NotPermittedError.new("user_id must be present") unless params[:user_id]
 
     @current_user ||= User.find(params[:user_id])
   end

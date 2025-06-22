@@ -36,10 +36,10 @@ user_ids.each_with_index do |user_id, index|
   num_follows = rand(0..MAX_FOLLOWS_PER_USER)
 
   # Get potential target user IDs, excluding the current user_id
-  possible_target_ids = user_ids - [user_id]
+  possible_target_ids = user_ids - [ user_id ]
 
   # If there are not enough possible targets, follow fewer users
-  num_follows = [num_follows, possible_target_ids.length].min
+  num_follows = [ num_follows, possible_target_ids.length ].min
 
   # Shuffle and pick target users
   selected_target_ids = possible_target_ids.shuffle.take(num_follows)
@@ -73,4 +73,3 @@ puts "\nFollow relationships created."
 puts "Mock data generation complete!"
 puts "Total users created: #{User.count}"
 puts "Total follow relationships created: #{Follow.count}"
-

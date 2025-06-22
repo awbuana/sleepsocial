@@ -1,6 +1,5 @@
 module FollowService
   class Follow < ::BaseService
-
     def initialize(user, target_user_id, options = {})
       @user = user
       @target_user_id = target_user_id
@@ -27,7 +26,7 @@ module FollowService
     private
 
     def validate!
-      raise FollowService::Error.new('User must follow other users') if @user.id == @target_user_id
+      raise FollowService::Error.new("User must follow other users") if @user.id == @target_user_id
     end
   end
 end

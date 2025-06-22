@@ -1,6 +1,5 @@
 module SleepLogService
   class CreateLog < ::BaseService
-
     def initialize(user, options = {})
       @user = user
     end
@@ -10,7 +9,7 @@ module SleepLogService
 
       ActiveRecord::Base.transaction(isolation: :serializable) do
         pending_log = SleepLog.find_by(user_id: @user, clock_out: nil)
-        raise SleepLogService::Error.new('User must clock out pending log first') if pending_log
+        raise SleepLogService::Error.new("User must clock out pending log first") if pending_log
 
         log.user = @user
         log.clock_in = Time.now.utc
@@ -23,6 +22,5 @@ module SleepLogService
 
       log
     end
-
   end
 end

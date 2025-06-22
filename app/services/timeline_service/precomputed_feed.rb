@@ -1,6 +1,5 @@
 module TimelineService
   class PrecomputedFeed < ::BaseService
-
     def initialize(account, options = {})
       @account = account
     end
@@ -14,6 +13,5 @@ module TimelineService
 
       records.flatten
     end
-
   end
 end

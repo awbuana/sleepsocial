@@ -5,7 +5,7 @@ class FollowsController < ApplicationController
   def index
     permitted = params.permit(:user_id, :limit, :after, :before).to_h.symbolize_keys
     permitted[:limit] = permitted[:limit].to_i if permitted[:limit]
-    raise Sleepsocial::Error.('Parameter user_id is missing') unless permitted[:user_id]
+    raise Sleepsocial::Error.("Parameter user_id is missing") unless permitted[:user_id]
 
     pagination_params = permitted.slice(:limit, :after, :before)
     paginator = Follow.where(user_id: permitted[:user_id]).cursor_paginate(**pagination_params)
@@ -35,7 +35,7 @@ class FollowsController < ApplicationController
     @user = User.find(follow_params[:user_id])
     FollowService.unfollow(@user, follow_params[:target_user_id])
 
-    render_message 'Unfollow successfully'
+    render_message "Unfollow successfully"
   end
 
   private

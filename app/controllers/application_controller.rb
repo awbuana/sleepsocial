@@ -15,7 +15,7 @@ class ApplicationController < ActionController::API
   end
 
   def render_message(message, **options)
-    options.merge!(json: {message: message}.to_json)
+    options.merge!(json: { message: message }.to_json)
     options.merge!(status: :ok) unless options.key?(:status)
 
     render options
