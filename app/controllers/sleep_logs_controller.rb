@@ -22,13 +22,8 @@ class SleepLogsController < ApplicationController
 
   # POST /sleep_logs
   def create
-    @sleep_log = SleepLog.new(sleep_log_params)
-
-    if @sleep_log.save
-      render json: @sleep_log, status: :created, location: @sleep_log
-    else
-      render json: @sleep_log.errors, status: :unprocessable_entity
-    end
+    @sleep_log = SleepLogService.create_log(current_user)
+    render json: @sleep_log, serializer: SleepLogSerializer, status: :created
   end
 
   # PATCH/PUT /sleep_logs/1/clock-out
@@ -49,12 +44,13 @@ class SleepLogsController < ApplicationController
     @sleep_log = SleepLog.find(params.expect(:id))
   end
 
-  # Only allow a list of trusted parameters through.
-  def sleep_log_params
-    params.expect(sleep_log: [ :user_id ])
-  end
-
   def update_sleep_log_params
     params.expect(sleep_log: [ :clock_out ])
+  end
+
+  def current_user
+    raise Sleepsocial::NotPermittedError.new('user_id must be present') unless params[:user_id]
+
+    @current_user ||= User.find(params[:user_id])
   end
 end

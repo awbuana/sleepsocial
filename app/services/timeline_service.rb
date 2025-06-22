@@ -1,5 +1,5 @@
 module TimelineService
-  class TimelineServiceError < StandardError; end
+  class Error < BaseService::ServiceError; end
 
   module_function
 
