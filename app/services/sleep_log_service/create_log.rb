@@ -7,6 +7,8 @@ module SleepLogService
     end
 
     def perform
+      validate!
+
       log = SleepLog.new
 
       ActiveRecord::Base.transaction(isolation: :serializable) do
@@ -24,9 +26,19 @@ module SleepLogService
         log
       end
 
-      FeedFanOutJob.perform_async(log.id)
+      FeedFanOutJob.perform_async(log.id) if log.clock_out.present?
 
       log
     end
+
+    private
+
+    def validate!
+      # add some buffer
+      now = Time.now.utc + 15.seconds
+      raise SleepLogService::Error.new("Clock in must be lower than #{now}") if @clock_in > now
+      raise SleepLogService::Error.new("Clock out must be lower than #{now}") if @clock_out && @clock_out > now
+    end
+
   end
 end

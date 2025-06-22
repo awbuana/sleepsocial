@@ -7,7 +7,7 @@ class FeedFanOutJob
 
     user = sleep_log.user
 
-    user.followers.select(:id).find_in_batches do | users |
+    user.followers.select(:id).order(:id).find_in_batches do | users |
       args = users.map { |user| [ user.id, sleep_log_id ] }
       Sidekiq::Client.push_bulk("class" => FeedInsertJob, "args" => args)
     end

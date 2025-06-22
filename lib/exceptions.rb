@@ -2,6 +2,6 @@
 
 module Sleepsocial
   class Error < StandardError; end
-  class NotPermittedError < Error; end
-  class ValidationError < Error; end
+  class UnauthenticatedError < Error; end
+  class PermissionDeniedError < Error; end
 end

@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate!
-    raise Sleepsocial::NotPermittedError.new("User must login") unless current_user
+    raise Sleepsocial::UnauthenticatedError.new("User must be login") unless current_user
   end
 
   def render_serializer(resource, serializer, **options)

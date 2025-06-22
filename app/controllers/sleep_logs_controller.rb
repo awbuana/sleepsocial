@@ -34,16 +34,7 @@ class SleepLogsController < ApplicationController
 
   # PATCH/PUT /sleep_logs/1/clock-out
   def clock_out
-    raise Sleepsocial::ValidationError.new("User already clocked out") if @sleep_log.clock_out
-
-    clock_out = if params[:clock_out].present?
-      Time.parse(params[:clock_out])
-    else
-      Time.now.utc
-    end
-
-    @sleep_log.update!(clock_out:  clock_out)
-
+    SleepLogService.clock_out(current_user, @sleep_log, params[:clock_out])
     render_serializer @sleep_log, SleepLogSerializer
   end
 
