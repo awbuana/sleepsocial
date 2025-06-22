@@ -12,6 +12,8 @@ class SleepLog < ApplicationRecord
   end
 
   def sleep_duration
+    return nil unless clock_out
+
     (clock_out - clock_in).seconds.in_hours.to_i
   end
 end

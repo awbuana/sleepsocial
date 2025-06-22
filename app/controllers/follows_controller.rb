@@ -6,12 +6,14 @@ class FollowsController < ApplicationController
   def index
     permitted = params.permit(:user_id, :limit, :after, :before).to_h.symbolize_keys
     permitted[:limit] = permitted[:limit].to_i if permitted[:limit]
+
     pagination_params = permitted.slice(:limit, :after, :before)
+    pagination_params.merge!(order: { id: :desc })
 
     paginator = if current_user
       Follow.where(user_id: current_user.id).cursor_paginate(**pagination_params)
     else
-      Follow.all.cursor_paginate(**pagination_params)
+      Follow.all.order(id: :desc).cursor_paginate(**pagination_params)
     end
 
     page = paginator.fetch
