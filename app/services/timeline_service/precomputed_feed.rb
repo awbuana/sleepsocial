@@ -1,17 +1,12 @@
 module TimelineService
   class PrecomputedFeed < ::BaseService
-    def initialize(account, options = {})
-      @account = account
+    def initialize(user, options = {})
+      @user = user
     end
 
     def perform
-      records = []
-
-      @account.following.find_in_batches do |following|
-        records << SleepLog.where(user_id: following).to_a
-      end
-
-      records.flatten
+      user_feed = UserFeed.new(@user)
+      SleepLog.where(id: user_feed.feed)
     end
   end
 end

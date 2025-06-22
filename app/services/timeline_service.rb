@@ -4,4 +4,5 @@ module TimelineService
   module_function
 
   def precomputed_feed(*args); TimelineService::PrecomputedFeed.new(*args).perform; end
+  def insert_log_to_feed(*args); TimelineService::InsertLogToFeed.new(*args).perform; end
 end

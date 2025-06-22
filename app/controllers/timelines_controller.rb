@@ -3,9 +3,9 @@ class TimelinesController < ApplicationController
 
   # GET /timelines
   def index
-    TimelineService.precomputed_feed(@current_user)
+    logs = TimelineService.precomputed_feed(@current_user)
 
-    render json: {}.to_json
+    render_serializer logs, SleepLogSerializer
   end
 
 
