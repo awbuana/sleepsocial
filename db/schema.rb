@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_20_143528) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_22_114658) do
   create_table "follows", charset: "utf8mb3", force: :cascade do |t|
     t.integer "user_id"
     t.integer "target_user_id"
@@ -25,11 +25,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_20_143528) do
     t.datetime "clock_out"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "clock_in", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.index ["user_id", "clock_out"], name: "index_sleep_logs_on_user_id_and_clock_out"
   end
 
   create_table "users", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "num_following", default: 0, null: false
+    t.integer "num_followers", default: 0, null: false
   end
 end
