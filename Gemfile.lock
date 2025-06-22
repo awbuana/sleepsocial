@@ -344,6 +344,7 @@ DEPENDENCIES
   pry
   puma (>= 5.0)
   rails (~> 8.0.2)
+  redis-client
   rubocop-rails-omakase
   sidekiq (~> 8.0)
   solid_cable
