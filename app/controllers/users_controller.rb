@@ -9,10 +9,10 @@ class UsersController < ApplicationController
     paginator = User.all.cursor_paginate(**permitted)
     page = paginator.fetch
 
-    render json: ActiveModelSerializers::SerializableResource.new(page.records, each_serializer: UserSerializer, meta: {
+    render_serializer page.records UserSerializer, meta: {
       prev_cursor: page.previous_cursor,
       next_cursor: page.next_cursor
-    }).to_json
+    }
   end
 
   # GET /users/1

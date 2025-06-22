@@ -19,7 +19,7 @@ class FollowsController < ApplicationController
 
   # GET /follows/1
   def show
-    render json: @follow
+    render_serializer @follow, FollowSerializer
   end
 
   # POST /follows
@@ -27,7 +27,7 @@ class FollowsController < ApplicationController
     @user = User.find(follow_params[:user_id])
     @follow = FollowService.follow(@user, follow_params[:target_user_id])
 
-    render json: @follow, status: :created
+    render_serializer @follow, FollowSerializer, status: :created
   end
 
   # DELETE /follows

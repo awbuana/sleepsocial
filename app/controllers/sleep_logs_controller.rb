@@ -9,32 +9,30 @@ class SleepLogsController < ApplicationController
     paginator = SleepLog.all.cursor_paginate(**permitted)
     page = paginator.fetch
 
-    render json: ActiveModelSerializers::SerializableResource.new(page.records, each_serializer: SleepLogSerializer, meta: {
+    render_serializer page.records, SleepLogSerializer, meta: {
       prev_cursor: page.previous_cursor,
       next_cursor: page.next_cursor
-    }).to_json
+    }
   end
 
   # GET /sleep_logs/1
   def show
-    render json: @sleep_log
+    render_serializer @sleep_log, SleepLogSerializer
   end
 
   # POST /sleep_logs
   def create
     @sleep_log = SleepLogService.create_log(current_user)
-    render json: @sleep_log, serializer: SleepLogSerializer, status: :created
+    render_serializer @sleep_log, SleepLogSerializer, status: :created
   end
 
   # PATCH/PUT /sleep_logs/1/clock-out
   def clock_out
     raise Sleepsocial::ValidationError.new("User already clocked out") if @sleep_log.clock_out
 
-    if @sleep_log.update(clock_out: Time.now)
-      render json: @sleep_log, serializer: SleepLogSerializer
-    else
-      render json: @sleep_log.errors, status: :unprocessable_entity
-    end
+    @sleep_log.update!(clock_out: Time.now)
+
+    render_serializer @sleep_log, SleepLogSerializer
   end
 
   private
