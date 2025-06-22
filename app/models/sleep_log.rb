@@ -2,6 +2,7 @@ class SleepLog < ApplicationRecord
   include IdentityCache
 
   belongs_to :user
+  cache_belongs_to :user
 
   validate :clock_out_gt_clock_in
 

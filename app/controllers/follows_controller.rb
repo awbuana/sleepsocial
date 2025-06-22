@@ -11,9 +11,9 @@ class FollowsController < ApplicationController
     pagination_params.merge!(order: { id: :desc })
 
     paginator = if current_user
-      Follow.where(user_id: current_user.id).cursor_paginate(**pagination_params)
+      Follow.where(user_id: current_user.id).preload(:user, :target_user).cursor_paginate(**pagination_params)
     else
-      Follow.all.order(id: :desc).cursor_paginate(**pagination_params)
+      Follow.all.order(id: :desc).preload(:user, :target_user).cursor_paginate(**pagination_params)
     end
 
     page = paginator.fetch

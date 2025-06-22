@@ -6,7 +6,7 @@ module TimelineService
 
     def perform
       user_feed = UserFeed.new(@user)
-      logs = SleepLog.fetch_multi(user_feed.feed)
+      logs = SleepLog.fetch_multi(user_feed.feed, includes: :user)
 
       logs.sort_by { |log| log.sleep_duration }.reverse
     end

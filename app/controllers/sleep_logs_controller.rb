@@ -11,9 +11,9 @@ class SleepLogsController < ApplicationController
     pagination_params.merge!(order: { id: :desc })
 
     paginator =  if current_user
-      SleepLog.where(user_id: current_user.id).cursor_paginate(**pagination_params)
+      SleepLog.where(user_id: current_user.id).preload(:user).cursor_paginate(**pagination_params)
     else
-      SleepLog.all.cursor_paginate(**permitted)
+      SleepLog.all.preload(:user).cursor_paginate(**permitted)
     end
 
     page = paginator.fetch
