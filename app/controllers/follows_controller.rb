@@ -1,5 +1,5 @@
 class FollowsController < ApplicationController
-  before_action :set_follow, only: %i[ show destroy ]
+  before_action :set_follow, only: %i[ show ]
 
   # GET /follows
   def index
@@ -11,10 +11,10 @@ class FollowsController < ApplicationController
     paginator = Follow.where(user_id: permitted[:user_id]).cursor_paginate(**pagination_params)
     page = paginator.fetch
 
-    render json: ActiveModelSerializers::SerializableResource.new(page.records, each_serializer: FollowSerializer, meta: {
+    render_serializer page.records, FollowSerializer, meta: {
       prev_cursor: page.previous_cursor,
       next_cursor: page.next_cursor
-    }).to_json
+    }
   end
 
   # GET /follows/1
@@ -25,22 +25,17 @@ class FollowsController < ApplicationController
   # POST /follows
   def create
     @user = User.find(follow_params[:user_id])
-    @target_user = User.find(follow_params[:target_user_id])
+    @follow = FollowService.follow(@user, follow_params[:target_user_id])
 
-    raise Sleepsocial::ValidationError.new("User should follow other users") if @user.id == @target_user.id
-
-    @follow = Follow.new(follow_params)
-
-    if @follow.save
-      render json: @follow, status: :created, location: @follow
-    else
-      render json: @follow.errors, status: :unprocessable_entity
-    end
+    render json: @follow, status: :created
   end
 
-  # DELETE /follows/1
+  # DELETE /follows
   def destroy
-    @follow.destroy!
+    @user = User.find(follow_params[:user_id])
+    FollowService.unfollow(@user, follow_params[:target_user_id])
+
+    render_message 'Unfollow successfully'
   end
 
   private
