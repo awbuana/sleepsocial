@@ -16,6 +16,7 @@ module SleepLogService
         raise SleepLogService::Error.new("User must clock out pending log first") if pending_log
 
         overlapped = SleepLog.where("user_id = ? AND clock_in <= ? AND clock_out >= ?", @user.id, @clock_in, @clock_in).exists?
+        overlapped ||= SleepLog.where("user_id = ? AND clock_in >= ? AND clock_out <= ?", @user.id, @clock_in, @clock_out).exists?
         raise SleepLogService::Error.new("Clock in time is overlapped with existing sleep log") if overlapped
 
         log.user = @user
