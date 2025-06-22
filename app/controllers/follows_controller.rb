@@ -3,10 +3,12 @@ class FollowsController < ApplicationController
 
   # GET /follows
   def index
-    permitted = params.permit(:limit, :after, :before).to_h.symbolize_keys
+    permitted = params.permit(:user_id, :limit, :after, :before).to_h.symbolize_keys
     permitted[:limit] = permitted[:limit].to_i if permitted[:limit]
+    raise Sleepsocial::Error.('Parameter user_id is missing') unless permitted[:user_id]
 
-    paginator = Follow.all.cursor_paginate(**permitted)
+    pagination_params = permitted.slice(:limit, :after, :before)
+    paginator = Follow.where(user_id: permitted[:user_id]).cursor_paginate(**pagination_params)
     page = paginator.fetch
 
     render json: ActiveModelSerializers::SerializableResource.new(page.records, each_serializer: FollowSerializer, meta: {
