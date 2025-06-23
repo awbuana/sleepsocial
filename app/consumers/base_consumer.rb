@@ -4,10 +4,22 @@ class BaseConsumer < Racecar::Consumer
   end
 
   def process(message)
-    Rails.logger.info(message: message.value, topic: message.topic, partition: message.partition, retry_count: message.retries_count)
-    perform(message)
-  rescue => e
-    Rails.logger.error(error: e.message, error_class: e.class, backtrace: e.backtrace.take(15).join("\n"))
-    raise e
+    ActiveSupport::Notifications.instrument("consumer_job", message: message) do |payload|
+      perform(message)
+    end
+  end
+
+  ActiveSupport::Notifications.subscribe "consumer_job" do |*data|
+    event = ActiveSupport::Notifications::Event.new(*data)
+    payload = event.payload
+    message = payload[:message]
+    exception = payload[:exception_object]
+    tags = {message: message.value, partition: message.partition, topic: message.partition, duration_ms: event.duration}
+
+    if exception
+      Rails.logger.error(error: exception.message, backtrace: exception.backtrace.take(15).join("\n"), **tags)
+    else
+      Rails.logger.info(**tags)
+    end
   end
 end
