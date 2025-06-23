@@ -2,4 +2,4 @@ server:
 	bin/rails s
 
 sidekiq:
-	bundle exec sidekiq
+	bundle exec sidekiq -C config/sidekiq.yml
