@@ -20,6 +20,9 @@ module FollowService
         target_user.increment!(:num_followers)
       end
 
+      event = Event::Follow.new(@user.id, target_user.id)
+      Racecar.produce_sync(value: event.payload, topic: event.topic_name, partition_key: event.routing_key)
+
       follow
     end
 

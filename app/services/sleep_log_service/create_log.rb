@@ -27,7 +27,8 @@ module SleepLogService
         log
       end
 
-      FeedFanOutJob.perform_async(log.id) if log.clock_out.present?
+
+      produce_event(log) if log.clock_out.present?
 
       log
     end
@@ -40,5 +41,9 @@ module SleepLogService
       raise SleepLogService::Error.new("Clock out must be lower than #{now}") if @clock_out && @clock_out > now
     end
 
+    def produce_event(log)
+      event = Event::SleepLogCreated.new(log.user_id, log.id)
+      Racecar.produce_sync(value: event.payload, topic: event.topic_name, partition_key: event.routing_key)
+    end
   end
 end

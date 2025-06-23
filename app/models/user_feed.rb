@@ -27,6 +27,8 @@ class UserFeed
 
   def remove_from_feed(members)
     member_keys = members.map{ |m| member_key(m) }
+    return if member_keys.blank?
+
     REDIS.call("ZREM", feed_key, member_keys)
   end
 

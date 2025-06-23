@@ -16,6 +16,9 @@ module FollowService
         @user.decrement!(:num_following)
         target_user.decrement!(:num_followers)
       end
+
+      event = Event::Unfollow.new(@user.id, target_user.id)
+      Racecar.produce_sync(value: event.payload, topic: event.topic_name, partition_key: event.routing_key)
     end
   end
 end
