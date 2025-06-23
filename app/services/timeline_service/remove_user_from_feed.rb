@@ -1,11 +1,15 @@
 module TimelineService
-  class RemoveUserFromFeed < ::BaseService
+  class RemoveUserFromFeed < TimelineService::Base
     def initialize(user, target_user_id, options = {})
       @user = user
       @target_user_id = target_user_id
     end
 
     def perform
+      # return if user follow another user
+      follow = Follow.find_by(user_id: @user.id, target_user_id: @target_user_id)
+      return if follow
+
       user_feed = UserFeed.new(@user)
 
       logs = user_feed.feed

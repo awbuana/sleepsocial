@@ -1,5 +1,5 @@
 module TimelineService
-  class InsertLogToFeed < ::BaseService
+  class InsertLogToFeed < TimelineService::Base
     def initialize(user, sleep_log, options = {})
       @user = user
       @sleep_log = sleep_log
@@ -8,6 +8,10 @@ module TimelineService
     def perform
       # only show finished sleep log
       return unless @sleep_log.clock_out.present?
+
+      # return if user not follow another user anymore
+      follow = Follow.find_by(user_id: @user.id, target_user_id: @sleep_log.user_id)
+      return unless follow
 
       user_feed = UserFeed.new(@user)
       user_feed.add_to_feed(@sleep_log)

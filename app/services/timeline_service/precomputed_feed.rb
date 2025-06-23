@@ -1,5 +1,5 @@
 module TimelineService
-  class PrecomputedFeed < ::BaseService
+  class PrecomputedFeed < TimelineService::Base
     def initialize(user, options = {})
       @user = user
     end
