@@ -36,6 +36,8 @@ gem "kamal", require: false
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
+gem 'racecar'
+
 group :development, :test do
   gem "pry"
 
@@ -48,7 +50,5 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-gem "faker"
+  gem "faker"
 end
-
-gem "sidekiq", "~> 8.0"
