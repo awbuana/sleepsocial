@@ -328,6 +328,7 @@ DEPENDENCIES
   cityhash
   dalli
   debug
+  dotenv
   faker
   identity_cache (~> 1.6.3)
   kamal

@@ -7,7 +7,7 @@ class FeedUpdatesConsumer < BaseConsumer
     case event["event_name"]
     when "Event::SleepLogCreated"
       fan_out_sleep_log(event)
-    when "insert_sleep_log_job"
+    when "Event::InsertSleepLog"
       insert_sleep_log(event)
     when "Event::Follow"
       follow_job(event)
