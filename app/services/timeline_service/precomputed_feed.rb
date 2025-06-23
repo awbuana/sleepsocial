@@ -22,7 +22,7 @@ module TimelineService
         log.created_at < timeline_threshold
       end
 
-      user_feed.remove_keys_from_feed(deprecated_logs) if deprecated_logs.present?
+      user_feed.remove_from_feed(deprecated_logs) if deprecated_logs.present?
 
       deprecated_logs
     end

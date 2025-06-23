@@ -25,7 +25,7 @@ class UserFeed
     REDIS.call("ZADD", feed_key, score(sleep_log), member_key(sleep_log))
   end
 
-  def remove_keys_from_feed(members)
+  def remove_from_feed(members)
     member_keys = members.map{ |m| member_key(m) }
     REDIS.call("ZREM", feed_key, member_keys)
   end
@@ -39,7 +39,7 @@ class UserFeed
   def parse_member(member_key)
     res = JSON.parse(member_key)
     res["ts"] = Time.parse(res["ts"])
-    
+
     Member.new(res['id'], res['uid'], res['ts'])
   end
 
