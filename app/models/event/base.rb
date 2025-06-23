@@ -1,5 +1,4 @@
 class Event::Base
-
   def topic_name
     raise UnimplementedError
   end

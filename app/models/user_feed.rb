@@ -1,5 +1,4 @@
 class UserFeed
-
   class Member
     attr_reader :id, :user_id, :created_at
 
@@ -17,7 +16,7 @@ class UserFeed
   def feed
     @feed ||= begin
       members = REDIS.call("ZREVRANGE", feed_key, 0, -1)
-      members.map{ |m| parse_member(m) }
+      members.map { |m| parse_member(m) }
     end
   end
 
@@ -26,7 +25,7 @@ class UserFeed
   end
 
   def remove_from_feed(members)
-    member_keys = members.map{ |m| member_key(m) }
+    member_keys = members.map { |m| member_key(m) }
     return if member_keys.blank?
 
     REDIS.call("ZREM", feed_key, member_keys)
@@ -42,7 +41,7 @@ class UserFeed
     res = JSON.parse(member_key)
     res["ts"] = Time.parse(res["ts"])
 
-    Member.new(res['id'], res['uid'], res['ts'])
+    Member.new(res["id"], res["uid"], res["ts"])
   end
 
   def score(sleep_log)
@@ -50,6 +49,6 @@ class UserFeed
   end
 
   def member_key(sleep_log)
-    {uid: sleep_log.user_id, id: sleep_log.id, ts: sleep_log.created_at.strftime("%Y%m%dT%H%M%S%z")}.to_json
+    { uid: sleep_log.user_id, id: sleep_log.id, ts: sleep_log.created_at.strftime("%Y%m%dT%H%M%S%z") }.to_json
   end
 end

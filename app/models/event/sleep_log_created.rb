@@ -1,5 +1,4 @@
 class Event::SleepLogCreated < Event::Base
-
   def initialize(user_id, sleep_log_id)
     @user_id = user_id
     @sleep_log_id = sleep_log_id

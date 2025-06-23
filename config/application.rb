@@ -36,7 +36,7 @@ module Sleepsocial
     # identity cache
     config.identity_cache_store = :mem_cache_store, ENV.fetch("MEMCACHED_HOST", "localhost:11211"), {
       expires_in: 6.hours.to_i, # in case of network errors when sending a cache invalidation
-      failover: false, # avoids more cache consistency issues
+      failover: false # avoids more cache consistency issues
     }
 
     # logger

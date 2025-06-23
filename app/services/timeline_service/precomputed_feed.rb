@@ -12,7 +12,7 @@ module TimelineService
       filter_log_ids = filter_log_ids(logs, deprecated_logs)
 
       sleep_logs = SleepLog.fetch_multi(filter_log_ids, includes: :user)
-      sleep_logs.sort_by { |log| [log.sleep_duration, log.id] }.reverse
+      sleep_logs.sort_by { |log| [ log.sleep_duration, log.id ] }.reverse
     end
 
     private
@@ -28,10 +28,10 @@ module TimelineService
     end
 
     def filter_log_ids(logs, deprecated_logs)
-      deprecated_keys = deprecated_logs.map{|log| log.id }.to_set
+      deprecated_keys = deprecated_logs.map { |log| log.id }.to_set
       logs.reject! { |log| deprecated_keys.include?(log.id) }
 
-      logs.map{ |log| log.id }
+      logs.map { |log| log.id }
     end
 
     def timeline_threshold

@@ -9,7 +9,7 @@ class SleepLogCreatedConsumer < BaseConsumer
   private
 
   def fan_out_sleep_log(event)
-    sleep_log_id = event['data']['sleep_log_id']
+    sleep_log_id = event["data"]["sleep_log_id"]
     sleep_log = SleepLog.find_by(id: sleep_log_id)
     return unless sleep_log
 

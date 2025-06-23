@@ -1,5 +1,4 @@
 class Event::Unfollow < Event::Base
-
   def initialize(user_id, unfollowed_user_id)
     @user_id = user_id
     @unfollowed_user_id = unfollowed_user_id

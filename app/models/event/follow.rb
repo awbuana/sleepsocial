@@ -1,5 +1,4 @@
 class Event::Follow < Event::Base
-
   def initialize(user_id, followed_user_id)
     @user_id = user_id
     @followed_user_id = followed_user_id

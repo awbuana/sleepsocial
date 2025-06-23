@@ -1,5 +1,4 @@
 class BaseConsumer < Racecar::Consumer
-
   def perform(message)
     raise NotImplementedError
   end

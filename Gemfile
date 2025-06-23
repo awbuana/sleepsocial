@@ -15,9 +15,9 @@ gem "activerecord_cursor_paginate"
 gem "lograge"
 gem "logstash-event"
 
-gem 'identity_cache', "~> 1.6.3"
-gem 'cityhash'
-gem 'dalli'
+gem "identity_cache", "~> 1.6.3"
+gem "cityhash"
+gem "dalli"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -36,7 +36,7 @@ gem "kamal", require: false
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
-gem 'racecar'
+gem "racecar"
 
 group :development, :test do
   gem "pry"
