@@ -41,6 +41,10 @@ gem "racecar"
 group :development, :test do
   gem "pry"
 
+  gem 'rspec-rails', '~> 8.0.0'
+
+  gem 'shoulda-matchers', '~> 6.0'
+
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
@@ -53,4 +57,8 @@ group :development, :test do
   gem "faker"
 
   gem "dotenv"
+
+  gem "factory_bot_rails"
 end
+
+
