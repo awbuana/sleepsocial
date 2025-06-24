@@ -17,7 +17,7 @@ class SleepLogCreatedConsumer < BaseConsumer
 
     user.followers.select(:id).order(:id).find_in_batches do | users |
       users.each do |user|
-        event = Event::InsertSleepLog.new(user.id, sleep_log_id)
+        event = Event::InsertLogToFeed.new(user.id, sleep_log_id)
         Racecar.produce_sync(value: event.payload, topic: event.topic_name, partition_key: event.routing_key)
       end
     end

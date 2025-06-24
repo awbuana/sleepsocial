@@ -5,7 +5,7 @@ class FeedUpdatesConsumer < BaseConsumer
     event = JSON.parse(message.value)
 
     case event["event_name"]
-    when "Event::InsertSleepLog"
+    when "Event::InsertLogToFeed"
       insert_sleep_log(event)
     when "Event::Follow"
       follow_job(event)
