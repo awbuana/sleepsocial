@@ -7,7 +7,10 @@ Rails.application.routes.draw do
     delete "/", on: :collection, to: "follows#destroy"
   end
 
-  resources :users
+  resources :users, except: [ :update, :destroy ] do
+    get "/following", on: :member, to: "users#following"
+    get "/followers", on: :member, to: "users#followers"
+  end
 
   get "/timelines", to: "timelines#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

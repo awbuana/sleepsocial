@@ -1,12 +1,9 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show ]
+  before_action :set_user, only: %i[ show following followers ]
 
   # GET /users
   def index
-    permitted = params.permit(:limit, :after, :before).to_h.symbolize_keys
-    permitted[:limit] = permitted[:limit].to_i if permitted[:limit]
-
-    paginator = User.all.cursor_paginate(**permitted)
+    paginator = User.all.cursor_paginate(**pagination_params)
     page = paginator.fetch
 
     render_serializer page.records, UserSerializer, meta: {
@@ -26,6 +23,28 @@ class UsersController < ApplicationController
     @user.save!
 
     render_serializer @user, UserSerializer, status: :created
+  end
+
+  # GET /users/1/following
+  def following
+    paginator = @user.following.all.cursor_paginate(**pagination_params)
+    page = paginator.fetch
+
+    render_serializer page.records, UserSerializer, meta: {
+      prev_cursor: page.previous_cursor,
+      next_cursor: page.next_cursor
+    }
+  end
+
+  # GET /users/1/followers
+  def followers
+    paginator = @user.followers.all.cursor_paginate(**pagination_params)
+     page = paginator.fetch
+
+    render_serializer page.records, UserSerializer, meta: {
+      prev_cursor: page.previous_cursor,
+      next_cursor: page.next_cursor
+    }
   end
 
   private
