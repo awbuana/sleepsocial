@@ -33,9 +33,5 @@ module TimelineService
 
       logs.map { |log| log.id }
     end
-
-    def timeline_threshold
-      7.days.ago.utc
-    end
   end
 end

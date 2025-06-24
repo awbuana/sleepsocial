@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_22_114658) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_24_100520) do
   create_table "follows", charset: "utf8mb3", force: :cascade do |t|
     t.integer "user_id"
     t.integer "target_user_id"
@@ -35,5 +35,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_22_114658) do
     t.datetime "updated_at", null: false
     t.integer "num_following", default: 0, null: false
     t.integer "num_followers", default: 0, null: false
+    t.datetime "last_backfill_at"
   end
 end

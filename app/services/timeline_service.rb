@@ -7,4 +7,5 @@ module TimelineService
   def insert_log_to_feed(*args); TimelineService::InsertLogToFeed.new(*args).perform; end
   def remove_user_from_feed(*args); TimelineService::RemoveUserFromFeed.new(*args).perform; end
   def backfill_feed_by_user(*args); TimelineService::BackfillFeedByUser.new(*args).perform; end
+  def backfill_feed_by_following(*args); TimelineService::BackfillFeedByFollowing.new(*args).perform; end
 end
