@@ -61,4 +61,6 @@ group :development, :test do
   gem "factory_bot_rails"
 end
 
+gem 'simplecov', require: false, group: :test
+
 
