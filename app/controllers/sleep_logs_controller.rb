@@ -6,7 +6,7 @@ class SleepLogsController < ApplicationController
   def index
     scope =  if params[:user_id]
       SleepLog.where(user_id: params[:user_id])
-    elsif current_user
+    elsif current_user.present?
       SleepLog.where(user_id: current_user.id)
     else
       SleepLog.all.preload(:user)
@@ -43,9 +43,5 @@ class SleepLogsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_sleep_log
     @sleep_log = SleepLog.find(params.expect(:id))
-  end
-
-  def update_sleep_log_params
-    params.expect(sleep_log: [ :clock_out ])
   end
 end

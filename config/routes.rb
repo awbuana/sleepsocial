@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :sleep_logs, path: "sleep-logs" do
-    post "clock-out", on: :member
+    patch "clock-out", on: :member
   end
 
   resources :follows, except: [ :update, :destroy ] do
