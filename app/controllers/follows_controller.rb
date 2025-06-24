@@ -6,7 +6,7 @@ class FollowsController < ApplicationController
   def index
     scope = if params[:user_id]
       Follow.where(user_id: params[:user_id])
-    elsif current_user
+    elsif current_user.present?
       Follow.where(user_id: current_user.id)
     else
       Follow.all.order(id: :desc)
