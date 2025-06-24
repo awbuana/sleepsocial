@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_24_100520) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_24_150257) do
   create_table "follows", charset: "utf8mb3", force: :cascade do |t|
     t.integer "user_id"
     t.integer "target_user_id"
@@ -30,11 +30,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_24_100520) do
   end
 
   create_table "users", charset: "utf8mb3", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "num_following", default: 0, null: false
     t.integer "num_followers", default: 0, null: false
     t.datetime "last_backfill_at"
+    t.index ["name"], name: "index_users_on_name", unique: true
   end
 end
