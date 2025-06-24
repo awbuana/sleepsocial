@@ -1,4 +1,6 @@
 class UserFeed
+  MAXIMUM_FEED = 5000.freeze
+
   class Member
     attr_reader :id, :user_id, :created_at
 
@@ -14,8 +16,13 @@ class UserFeed
   end
 
   def feed(offset = 0, limit = -1)
-    members = REDIS.call("ZRANGE", feed_key, offset, offset+limit-1, "REV")
+    end_idx = limit < 0 ? limit : offset+limit-1
+    members = REDIS.call("ZRANGE", feed_key, offset, end_idx, "REV")
     members.map { |m| parse_member(m) }
+  end
+
+  def count
+    REDIS.call("ZCARD", feed_key).to_i
   end
 
   def add_to_feed(sleep_log)
@@ -27,6 +34,13 @@ class UserFeed
     return if member_keys.blank?
 
     REDIS.call("ZREM", feed_key, member_keys)
+  end
+
+  def resize_feed
+    members_count = count
+    return if members_count <= UserFeed::MAXIMUM_FEED
+
+    REDIS.call("ZREMRANGEBYRANK", feed_key, 0, members_count-UserFeed::MAXIMUM_FEED)
   end
 
   private

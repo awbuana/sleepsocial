@@ -13,8 +13,14 @@ module TimelineService
       follow = Follow.find_by(user_id: @user.id, target_user_id: @sleep_log.user_id)
       return unless follow
 
-      user_feed = UserFeed.new(@user)
       user_feed.add_to_feed(@sleep_log)
+      user_feed.resize_feed # resize feed if overflow. to save memory space
+    end
+
+    private
+
+    def user_feed
+      @user_feed ||= UserFeed.new(@user)
     end
   end
 end

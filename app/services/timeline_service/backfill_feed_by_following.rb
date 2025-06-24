@@ -21,7 +21,7 @@ module TimelineService
     private
 
     def recently_backfilled?
-      @user.last_backfill_at && @user.last_backfill_at < 6.hour.ago.utc
+      @user.last_backfill_at && @user.last_backfill_at > 6.hour.ago.utc
     end
   end
 end
