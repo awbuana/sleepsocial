@@ -8,7 +8,6 @@ class TimelinesController < ApplicationController
     render_serializer logs, SleepLogSerializer
   end
 
-
   private
 
   def index_params
