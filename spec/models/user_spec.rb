@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-
   describe 'modules' do
     # Test that the modules are included
     it 'includes IdentityCache' do
@@ -34,7 +33,7 @@ RSpec.describe User, type: :model do
     it 'validates uniqueness of name' do
       create(:user, name: "Existing User")
       user = User.new(name: "Existing User")
-      expect{ user.save! }.to raise_error(ActiveRecord::RecordNotUnique)
+      expect { user.save! }.to raise_error(ActiveRecord::RecordNotUnique)
     end
   end
 

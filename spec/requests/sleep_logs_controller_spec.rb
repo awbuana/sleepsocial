@@ -46,7 +46,7 @@ RSpec.describe "SleepLogsControllers", type: :request do
       end
 
       it "returns sleep logs for the specified user_id" do
-        expect(json_response['data'].map { |sl| sl['id'] }).to match_array([sleep_log1.id, sleep_log4.id])
+        expect(json_response['data'].map { |sl| sl['id'] }).to match_array([ sleep_log1.id, sleep_log4.id ])
         expect(json_response['data'].size).to eq(2)
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe "SleepLogsControllers", type: :request do
       end
 
       it "returns sleep logs for the current_user" do
-        expect(json_response['data'].map { |sl| sl['id'] }).to eq([sleep_log3.id])
+        expect(json_response['data'].map { |sl| sl['id'] }).to eq([ sleep_log3.id ])
         expect(json_response['data'].size).to eq(1)
       end
     end

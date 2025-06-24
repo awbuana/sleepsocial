@@ -8,7 +8,7 @@ RSpec.describe "TimelinesControllers", type: :request do
   let!(:user_for_timeline) { create(:user, id: 101) }
 
   describe "GET /timelines" do
-    let(:user) {create(:user)}
+    let(:user) { create(:user) }
     let(:mock_feed_data) do
       [
         build(:sleep_log, id: 1, user_id: user_for_timeline.id, clock_in: 5.hours.ago, clock_out: 1.hour.ago),
@@ -71,7 +71,7 @@ RSpec.describe "TimelinesControllers", type: :request do
 
       it "calls TimelineService.precomputed_feed without limit/offset" do
         expected_user = User.find(user_for_timeline.id)
-        expect(TimelineService).to have_received(:precomputed_feed).with(expected_user, {limit: nil, offset: nil})
+        expect(TimelineService).to have_received(:precomputed_feed).with(expected_user, { limit: nil, offset: nil })
       end
 
       it "returns feed data and meta with nil offset/limit" do

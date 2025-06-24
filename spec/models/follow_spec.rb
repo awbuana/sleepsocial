@@ -36,7 +36,7 @@ RSpec.describe Follow, type: :model do
     it 'validates uniqueness of user_id and target_user_id combination' do
       # Attempt to create a duplicate follow relationship
       follow = Follow.new(user: user_a, target_user: user_b)
-      expect{ follow.save! }.to raise_error(ActiveRecord::RecordNotUnique)
+      expect { follow.save! }.to raise_error(ActiveRecord::RecordNotUnique)
     end
 
     it 'allows a user to follow multiple target_users' do

@@ -14,7 +14,7 @@ class BaseConsumer < Racecar::Consumer
     payload = event.payload
     message = payload[:message]
     exception = payload[:exception_object]
-    tags = {message: message.value, partition: message.partition, topic: message.partition, duration_ms: event.duration}
+    tags = { message: message.value, partition: message.partition, topic: message.partition, duration_ms: event.duration }
 
     if exception
       Rails.logger.error(error: exception.message, backtrace: exception.backtrace.take(15).join("\n"), **tags)

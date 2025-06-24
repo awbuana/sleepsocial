@@ -17,7 +17,7 @@ module TimelineService
       {
         data: sleep_logs.sort_by { |log| [ log.sleep_duration, log.id ] }.reverse,
         limit: @limit,
-        offset: @offset,
+        offset: @offset
       }
     end
 

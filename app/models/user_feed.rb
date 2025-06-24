@@ -13,7 +13,7 @@ class UserFeed
     @user = user
   end
 
-  def feed(offset=0, limit=-1)
+  def feed(offset = 0, limit = -1)
     members = REDIS.call("ZRANGE", feed_key, offset, offset+limit-1, "REV")
     members.map { |m| parse_member(m) }
   end

@@ -30,7 +30,7 @@ RSpec.describe "FollowsControllers", type: :request do
       end
 
       it "returns all follows ordered by id descending" do
-        expect(json_response['data'].map { |f| f['id'] }).to match_array([follow2.id, follow1.id])
+        expect(json_response['data'].map { |f| f['id'] }).to match_array([ follow2.id, follow1.id ])
         expect(json_response['data'].size).to eq(2)
       end
     end
@@ -43,7 +43,7 @@ RSpec.describe "FollowsControllers", type: :request do
       end
 
       it "returns follows for the specified user_id" do
-        expect(json_response['data'].map { |f| f['id'] }).to eq([follow1.id])
+        expect(json_response['data'].map { |f| f['id'] }).to eq([ follow1.id ])
         expect(json_response['data'].size).to eq(1)
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe "FollowsControllers", type: :request do
       end
 
       it "returns follows for the current_user" do
-        expect(json_response['data'].map { |f| f['id'] }).to eq([follow_by_current_user.id])
+        expect(json_response['data'].map { |f| f['id'] }).to eq([ follow_by_current_user.id ])
         expect(json_response['data'].size).to eq(1)
       end
     end
