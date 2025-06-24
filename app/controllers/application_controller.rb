@@ -40,4 +40,13 @@ class ApplicationController < ActionController::API
   def render_error(errors, status = :unprocessable_entity)
     render json: errors, status: status, root: :errors
   end
+
+  def pagination_params
+    permitted = params.permit(:limit, :after, :before).to_h.symbolize_keys
+    permitted[:limit] = permitted[:limit].to_i if permitted[:limit]
+
+    pagination_params = permitted
+    pagination_params.merge!(order: { id: :desc })
+    pagination_params
+  end
 end

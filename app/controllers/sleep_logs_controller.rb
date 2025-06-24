@@ -4,18 +4,15 @@ class SleepLogsController < ApplicationController
 
   # GET /sleep_logs
   def index
-    permitted = params.permit(:limit, :after, :before).to_h.symbolize_keys
-    permitted[:limit] = permitted[:limit].to_i if permitted[:limit]
-
-    pagination_params = permitted
-    pagination_params.merge!(order: { id: :desc })
-
-    paginator =  if current_user
-      SleepLog.where(user_id: current_user.id).preload(:user).cursor_paginate(**pagination_params)
+    scope =  if params[:user_id]
+      SleepLog.where(user_id: params[:user_id])
+    elsif current_user
+      SleepLog.where(user_id: current_user.id)
     else
-      SleepLog.all.preload(:user).cursor_paginate(**permitted)
+      SleepLog.all.preload(:user)
     end
 
+    paginator = scope.preload(:user).cursor_paginate(**pagination_params)
     page = paginator.fetch
 
     render_serializer page.records, SleepLogSerializer, meta: {

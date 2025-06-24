@@ -4,18 +4,15 @@ class FollowsController < ApplicationController
 
   # GET /follows
   def index
-    permitted = params.permit(:user_id, :limit, :after, :before).to_h.symbolize_keys
-    permitted[:limit] = permitted[:limit].to_i if permitted[:limit]
-
-    pagination_params = permitted.slice(:limit, :after, :before)
-    pagination_params.merge!(order: { id: :desc })
-
-    paginator = if current_user
-      Follow.where(user_id: current_user.id).preload(:user, :target_user).cursor_paginate(**pagination_params)
+    scope = if params[:user_id]
+      Follow.where(user_id: params[:user_id])
+    elsif current_user
+      Follow.where(user_id: current_user.id)
     else
-      Follow.all.order(id: :desc).preload(:user, :target_user).cursor_paginate(**pagination_params)
+      Follow.all.order(id: :desc)
     end
 
+    paginator = scope.preload(:user, :target_user).cursor_paginate(**pagination_params)
     page = paginator.fetch
 
     render_serializer page.records, FollowSerializer, meta: {
