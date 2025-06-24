@@ -13,11 +13,9 @@ class UserFeed
     @user = user
   end
 
-  def feed
-    @feed ||= begin
-      members = REDIS.call("ZREVRANGE", feed_key, 0, -1)
-      members.map { |m| parse_member(m) }
-    end
+  def feed(offset=0, limit=-1)
+    members = REDIS.call("ZRANGE", feed_key, offset, offset+limit-1, "REV")
+    members.map { |m| parse_member(m) }
   end
 
   def add_to_feed(sleep_log)

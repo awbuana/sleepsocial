@@ -1,20 +1,10 @@
 class TimelinesController < ApplicationController
-  before_action :set_current_user, only: %i[ index ]
+  before_action :authenticate!
 
   # GET /timelines
   def index
-    logs = TimelineService.precomputed_feed(@current_user)
+    feed = TimelineService.precomputed_feed(@current_user, limit: params[:limit], offset: params[:offset])
 
-    render_serializer logs, SleepLogSerializer
-  end
-
-  private
-
-  def index_params
-    index_params ||= params.permit(:user_id, :limit, :offset)
-  end
-
-  def set_current_user
-    @current_user ||= User.find(index_params[:user_id])
+    render_serializer feed[:data], SleepLogSerializer, meta: { offset: feed[:offset], limit: feed[:limit]}
   end
 end
