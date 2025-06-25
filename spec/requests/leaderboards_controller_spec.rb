@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe "TimelinesControllers", type: :request do
+RSpec.describe "LeaderboardsControllers", type: :request do
   def json_response
     JSON.parse(response.body)
   end
 
   let!(:user_for_timeline) { create(:user, id: 101) }
 
-  describe "GET /timelines" do
+  describe "GET /leaderboards" do
     let(:user) { create(:user) }
     let(:mock_feed_data) do
       [
@@ -24,22 +24,22 @@ RSpec.describe "TimelinesControllers", type: :request do
     end
 
     before do
-      allow(TimelineService).to receive(:precomputed_feed).and_return(mock_feed_response)
+      allow(LeaderboardService).to receive(:precomputed_feed).and_return(mock_feed_response)
       allow(User).to receive(:find).and_return(:user_for_timeline)
     end
 
     context "when a user_id is provided" do
       let(:request_params) { { user_id: user_for_timeline.id, limit: 2, offset: 0 } }
 
-      before { get '/timelines', params: request_params, headers: { 'X-USER-ID' => user_for_timeline.id } }
+      before { get '/leaderboards', params: request_params, headers: { 'X-USER-ID' => user_for_timeline.id } }
 
       it "returns a successful response" do
         expect(response).to be_successful
       end
 
-      it "calls TimelineService.precomputed_feed with correct parameters" do
+      it "calls LeaderboardService.precomputed_feed with correct parameters" do
         expected_user = User.find(user_for_timeline.id)
-        expect(TimelineService).to have_received(:precomputed_feed).with(expected_user, limit: "2", offset: "0")
+        expect(LeaderboardService).to have_received(:precomputed_feed).with(expected_user, limit: "2", offset: "0")
       end
 
       it "returns the feed data as SleepLogSerializer" do
@@ -65,13 +65,13 @@ RSpec.describe "TimelinesControllers", type: :request do
       end
 
       before do
-        allow(TimelineService).to receive(:precomputed_feed).and_return(mock_feed_response_no_params)
-        get '/timelines', params: request_params, headers: { 'X-USER-ID' => user_for_timeline.id }
+        allow(LeaderboardService).to receive(:precomputed_feed).and_return(mock_feed_response_no_params)
+        get '/leaderboards', params: request_params, headers: { 'X-USER-ID' => user_for_timeline.id }
       end
 
-      it "calls TimelineService.precomputed_feed without limit/offset" do
+      it "calls LeaderboardService.precomputed_feed without limit/offset" do
         expected_user = User.find(user_for_timeline.id)
-        expect(TimelineService).to have_received(:precomputed_feed).with(expected_user, { limit: nil, offset: nil })
+        expect(LeaderboardService).to have_received(:precomputed_feed).with(expected_user, { limit: nil, offset: nil })
       end
 
       it "returns feed data and meta with nil offset/limit" do

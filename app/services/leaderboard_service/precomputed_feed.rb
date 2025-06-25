@@ -1,5 +1,5 @@
-module TimelineService
-  class PrecomputedFeed < TimelineService::Base
+module LeaderboardService
+  class PrecomputedFeed < LeaderboardService::Base
     def initialize(user, options = {})
       @user = user
       @limit = (options[:limit] || 20).to_i
@@ -17,7 +17,8 @@ module TimelineService
       {
         data: sleep_logs.sort_by { |log| [ log.sleep_duration, log.id ] }.reverse,
         limit: @limit,
-        offset: @offset
+        offset: @offset,
+        count: user_feed.count
       }
     end
 
@@ -25,7 +26,7 @@ module TimelineService
 
     def remove_deprecated_logs(user_feed, logs)
       deprecated_logs = logs.select do |log|
-        log.created_at < timeline_threshold
+        log.created_at < leaderboard_threshold
       end
 
       user_feed.remove_from_feed(deprecated_logs) if deprecated_logs.present?

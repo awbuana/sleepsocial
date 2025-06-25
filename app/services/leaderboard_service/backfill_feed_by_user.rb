@@ -1,4 +1,4 @@
-module TimelineService
+module LeaderboardService
   class BackfillFeedByUser < ::BaseService
     def initialize(user, followed_user, options = {})
       @user = user
@@ -12,7 +12,7 @@ module TimelineService
 
       user_feed = UserFeed.new(@user)
 
-      @followed_user.sleep_logs.where("created_at > ?", timeline_threshold).order(:id).find_in_batches do | sleep_logs |
+      @followed_user.sleep_logs.where("created_at > ?", leaderboard_threshold).order(:id).find_in_batches do | sleep_logs |
         sleep_logs.each do |log|
           # skip sleep log if it's not finalized yet
           next unless log.clock_out
@@ -24,7 +24,7 @@ module TimelineService
 
     private
 
-    def timeline_threshold
+    def leaderboard_threshold
       7.days.ago
     end
   end

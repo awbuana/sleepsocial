@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     get "/followers", on: :member, to: "users#followers"
   end
 
-  get "/timelines", to: "timelines#index"
+  get "/leaderboards", to: "leaderboards#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

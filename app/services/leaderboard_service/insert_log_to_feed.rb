@@ -1,5 +1,5 @@
-module TimelineService
-  class InsertLogToFeed < TimelineService::Base
+module LeaderboardService
+  class InsertLogToFeed < LeaderboardService::Base
     def initialize(user, sleep_log, options = {})
       @user = user
       @sleep_log = sleep_log

@@ -1,5 +1,5 @@
-module TimelineService
-  class RemoveUserFromFeed < TimelineService::Base
+module LeaderboardService
+  class RemoveUserFromFeed < LeaderboardService::Base
     def initialize(user, target_user_id, options = {})
       @user = user
       @target_user_id = target_user_id

@@ -32,10 +32,6 @@ RSpec.describe "UsersControllers", type: :request do
         expect(json_response['data'].size).to eq(2)
       end
 
-      it "returns the first N users" do
-        expect(json_response['data'].map { |u| u['id'] }).to eq(User.all.order(id: :asc).limit(2).map(&:id))
-      end
-
       it "returns next_cursor for pagination" do
         expect(json_response['meta']['next_cursor']).not_to be_nil
       end

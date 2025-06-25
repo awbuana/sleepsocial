@@ -1,4 +1,4 @@
-module TimelineService
+module LeaderboardService
   class BackfillFeedByFollowing < ::BaseService
     def initialize(user, options = {})
       @user = user

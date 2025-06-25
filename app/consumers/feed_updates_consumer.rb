@@ -28,7 +28,7 @@ class FeedUpdatesConsumer < BaseConsumer
     sleep_log = SleepLog.find_by(id: sleep_log_id)
     return unless sleep_log
 
-    TimelineService.insert_log_to_feed(user, sleep_log)
+    LeaderboardService.insert_log_to_feed(user, sleep_log)
   end
 
   def unfollow_job(event)
@@ -37,7 +37,7 @@ class FeedUpdatesConsumer < BaseConsumer
     return unless user
 
     target_user_id = event["data"]["unfollowed_user_id"]
-    TimelineService.remove_user_from_feed(user, target_user_id)
+    LeaderboardService.remove_user_from_feed(user, target_user_id)
   end
 
   def follow_job(event)
@@ -49,7 +49,7 @@ class FeedUpdatesConsumer < BaseConsumer
     followed_user = User.find_by(id: followed_user_id)
     return unless followed_user
 
-    TimelineService.backfill_feed_by_user(user, followed_user)
+    LeaderboardService.backfill_feed_by_user(user, followed_user)
   end
 
   def backfill_by_user_job(event)
@@ -61,6 +61,6 @@ class FeedUpdatesConsumer < BaseConsumer
     target_user = User.find_by(id: target_user_id)
     return unless target_user
 
-    TimelineService.backfill_feed_by_user(user, target_user)
+    LeaderboardService.backfill_feed_by_user(user, target_user)
   end
 end
