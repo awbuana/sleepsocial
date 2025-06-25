@@ -95,4 +95,96 @@ RSpec.describe "UsersControllers", type: :request do
       end
     end
   end
+
+  describe "GET /users/:id/following" do
+    let!(:user1) { create(:user) }
+    let!(:followed_user_1) { create(:user) }
+    let!(:followed_user_2) { create(:user) }
+    let!(:follow_record_1) { create(:follow, user: user1, target_user: followed_user_1) }
+    let!(:follow_record_2) { create(:follow, user: user1, target_user: followed_user_2) }
+
+    context "when the user has followings" do
+      before do
+        get following_user_path(user1)
+      end
+
+      it "returns a successful response" do
+        expect(response).to be_successful
+      end
+
+      it "returns a list of users the user is following" do
+        expect(json_response['data'].count).to eq(2)
+        expect(json_response['data'].first['id']).to eq(followed_user_2.id)
+        expect(json_response['data'].second['id']).to eq(followed_user_1.id)
+      end
+
+      it "returns pagination metadata" do
+        expect(json_response['meta']['prev_cursor']).not_to be_nil
+        expect(json_response['meta']['next_cursor']).not_to be_nil
+      end
+    end
+
+    context "when the user has no followings" do
+      let!(:user_no_following) { create(:user) } # A user with no followings
+
+      before do
+        get following_user_path(user_no_following)
+      end
+
+      it "returns an empty list" do
+        expect(json_response['data']).to be_empty
+      end
+
+      it "returns nil for pagination cursors" do
+        expect(json_response['meta']['prev_cursor']).to be_nil
+        expect(json_response['meta']['next_cursor']).to be_nil
+      end
+    end
+  end
+
+  describe "GET /users/:id/followers" do
+    let!(:user1) { create(:user) }
+    let!(:follower_user_1) { create(:user) }
+    let!(:follower_user_2) { create(:user) }
+    let!(:follow_record_1) { create(:follow, user: follower_user_1, target_user: user1) }
+    let!(:follow_record_2) { create(:follow, user: follower_user_2, target_user: user1) }
+
+    context "when the user has followers" do
+      before do
+        get followers_user_path(user1)
+      end
+
+      it "returns a successful response" do
+        expect(response).to be_successful
+      end
+
+      it "returns a list of users who are following the user" do
+        expect(json_response['data'].count).to eq(2)
+        expect(json_response['data'].first['id']).to eq(follower_user_2.id)
+        expect(json_response['data'].second['id']).to eq(follower_user_1.id)
+      end
+
+      it "returns pagination metadata" do
+        expect(json_response['meta']['prev_cursor']).not_to be_nil
+        expect(json_response['meta']['next_cursor']).not_to be_nil
+      end
+    end
+
+    context "when the user has no followers" do
+      let!(:user_no_followers) { create(:user) } # A user with no followers
+
+      before do
+        get followers_user_path(user_no_followers)
+      end
+
+      it "returns an empty list" do
+        expect(json_response['data']).to be_empty
+      end
+
+      it "returns nil for pagination cursors" do
+        expect(json_response['meta']['prev_cursor']).to be_nil
+        expect(json_response['meta']['next_cursor']).to be_nil
+      end
+    end
+  end
 end

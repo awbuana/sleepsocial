@@ -42,16 +42,11 @@ RSpec.describe SleepLog, type: :model do
     it 'calculates the correct sleep duration in hours' do
       # Example: 1 hour sleep
       sleep_log = build(:sleep_log, :short_sleep, user: user)
-      expect(sleep_log.sleep_duration).to eq(1)
+      expect(sleep_log.sleep_duration).to eq(60)
 
       # Example: 8 hour sleep
       sleep_log_long = build(:sleep_log, :long_sleep, user: user)
-      expect(sleep_log_long.sleep_duration).to eq(10)
-
-      # Test with minutes, ensuring it truncates to integer hours
-      sleep_log_with_minutes = build(:sleep_log, user: user, clock_in: 8.hours.ago - 30.minutes, clock_out: Time.current)
-      # 8.5 hours should return 8 (integer truncation)
-      expect(sleep_log_with_minutes.sleep_duration).to eq(8)
+      expect(sleep_log_long.sleep_duration).to eq(600)
     end
   end
 end

@@ -40,7 +40,7 @@ class UserFeed
     members_count = count
     return if members_count <= UserFeed::MAXIMUM_FEED
 
-    REDIS.call("ZREMRANGEBYRANK", feed_key, 0, members_count-UserFeed::MAXIMUM_FEED)
+    REDIS.call("ZREMRANGEBYRANK", feed_key, 0, members_count-UserFeed::MAXIMUM_FEED-1)
   end
 
   private
