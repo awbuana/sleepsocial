@@ -41,15 +41,28 @@ RSpec.describe "UsersControllers", type: :request do
   describe "GET /users/:id" do
     let!(:user) { create(:user) }
 
-    before { get "/users/#{user.id}" }
+    context "user exists" do
+      before { get "/users/#{user.id}" }
 
-    it "returns a successful response" do
-      expect(response).to be_successful
+      it "returns a successful response" do
+        expect(response).to be_successful
+      end
+
+      it "returns the requested user" do
+        expect(json_response['data']['id']).to eq(user.id)
+        expect(json_response['data']['name']).to eq(user.name)
+      end
     end
 
-    it "returns the requested user" do
-      expect(json_response['data']['id']).to eq(user.id)
-      expect(json_response['data']['name']).to eq(user.name)
+    context "user doesn't exist" do
+      before do
+        allow(User).to receive(:find).and_raise(ActiveRecord::RecordNotFound)
+        get "/users/#{user.id}"
+      end
+
+      it "returns 404" do
+        expect(response.status).to be(404)
+      end
     end
   end
 
@@ -92,6 +105,33 @@ RSpec.describe "UsersControllers", type: :request do
       it "returns error messages" do
         post '/users', params: user_params, as: :json
         expect(json_response).to have_key('error')
+      end
+    end
+
+    context "user permission denied" do
+      let(:user_params) { { user: { name: 'bob' } } }
+
+      before do
+        allow_any_instance_of(User).to receive(:save!).and_raise(Sleepsocial::PermissionDeniedError)
+        post '/users', params: user_params, as: :json
+      end
+
+      it "returns 403" do
+        expect(response.status).to be(403)
+      end
+    end
+
+    context "duplicate users" do
+      let(:user_params) { { user: { name: 'bob' } } }
+
+      before do
+        allow_any_instance_of(User).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
+        post '/users', params: user_params, as: :json
+      end
+
+      it "returns 422" do
+        expect(response.status).to be(422)
+        expect(json_response['error']).to eq("Duplicate record")
       end
     end
   end
