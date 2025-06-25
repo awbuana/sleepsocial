@@ -40,6 +40,7 @@ class UserFeed
     members_count = count
     return if members_count <= UserFeed::MAXIMUM_FEED
 
+    Rails.logger.info(message: "resize feed user", user_id: @user.id, count: members_count)
     REDIS.call("ZREMRANGEBYRANK", feed_key, 0, members_count-UserFeed::MAXIMUM_FEED-1)
   end
 
