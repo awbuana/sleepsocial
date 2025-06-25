@@ -1,6 +1,6 @@
 module LeaderboardService
   class PrecomputedFeed < LeaderboardService::Base
-    GET_FEED_LIMIT_BUFFER = 100
+    GET_FEED_LIMIT_BUFFER = 50
 
     def initialize(user, options = {})
       @user = user
