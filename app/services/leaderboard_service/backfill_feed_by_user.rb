@@ -1,5 +1,5 @@
 module LeaderboardService
-  class BackfillFeedByUser < ::BaseService
+  class BackfillFeedByUser < LeaderboardService::Base
     def initialize(user, followed_user, options = {})
       @user = user
       @followed_user = followed_user
@@ -20,12 +20,6 @@ module LeaderboardService
           user_feed.add_to_feed(log)
         end
       end
-    end
-
-    private
-
-    def leaderboard_threshold
-      7.days.ago
     end
   end
 end
