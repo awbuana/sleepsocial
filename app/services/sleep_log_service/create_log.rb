@@ -2,7 +2,7 @@ module SleepLogService
   class CreateLog < SleepLogService::Base
     def initialize(user, params, options = {})
       @user = user
-      @clock_in = params[:clock_in]
+      @clock_in = params[:clock_in] || Time.now.utc
       @clock_out = params[:clock_out]
     end
 
@@ -17,10 +17,11 @@ module SleepLogService
 
         overlapped = SleepLog.where("user_id = ? AND clock_in <= ? AND clock_out >= ?", @user.id, @clock_in, @clock_in).exists?
         overlapped ||= SleepLog.where("user_id = ? AND clock_in >= ? AND clock_out <= ?", @user.id, @clock_in, @clock_out).exists?
+        overlapped ||= SleepLog.where("user_id = ? AND clock_in >= ? AND clock_out >= ?", @user.id, @clock_in, @clock_out).exists?
         raise SleepLogService::Error.new("Clock in time is overlapped with existing sleep log") if overlapped
 
         log.user = @user
-        log.clock_in =  @clock_in || Time.now.utc
+        log.clock_in =  @clock_in
         log.clock_out = @clock_out if @clock_out.present?
         log.save!
 
