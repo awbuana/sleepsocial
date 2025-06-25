@@ -5,6 +5,7 @@ class SleepLogSerializer < ActiveModel::Serializer
   attribute :clock_out
   attribute :sleep_duration_in_minutes
   attribute :created_at
+  attribute :updated_at
 
   def user
     UserSerializer.new(object.fetch_user)
