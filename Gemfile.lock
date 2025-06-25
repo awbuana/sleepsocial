@@ -333,6 +333,7 @@ GEM
     thruster (0.1.14)
     thruster (0.1.14-aarch64-linux)
     thruster (0.1.14-x86_64-linux)
+    timecop (0.9.10)
     timeout (0.4.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -378,6 +379,7 @@ DEPENDENCIES
   shoulda-matchers (~> 6.0)
   simplecov
   thruster
+  timecop
   tzinfo-data
 
 BUNDLED WITH

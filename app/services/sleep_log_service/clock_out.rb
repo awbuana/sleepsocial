@@ -25,7 +25,6 @@ module SleepLogService
 
     def validate!
       raise Sleepsocial::PermissionDeniedError if @sleep_log.user_id != @user.id
-      raise SleepLogService::Error.new("Clock out must be present") unless @clock_out
       raise SleepLogService::Error.new("User already clocked out") if @sleep_log.clock_out
 
       now = now_with_buffer
