@@ -2,12 +2,12 @@ class UserFeed
   MAXIMUM_FEED = 5000.freeze
 
   class Member
-    attr_reader :id, :user_id, :created_at
+    attr_reader :id, :user_id, :clock_in
 
-    def initialize(id, user_id, created_at)
+    def initialize(id, user_id, clock_in)
       @id = id
       @user_id = user_id
-      @created_at = created_at
+      @clock_in = clock_in
     end
   end
 
@@ -61,6 +61,6 @@ class UserFeed
   end
 
   def member_key(sleep_log)
-    { uid: sleep_log.user_id, id: sleep_log.id, ts: sleep_log.created_at.strftime("%Y%m%dT%H%M%S%z") }.to_json
+    { uid: sleep_log.user_id, id: sleep_log.id, ts: sleep_log.clock_in.strftime("%Y%m%dT%H%M%S%z") }.to_json
   end
 end

@@ -1,5 +1,7 @@
 module LeaderboardService
   class PrecomputedFeed < LeaderboardService::Base
+    GET_FEED_LIMIT_BUFFER = 100
+
     def initialize(user, options = {})
       @user = user
       @limit = (options[:limit] || 20).to_i
@@ -9,34 +11,35 @@ module LeaderboardService
     def perform
       user_feed = UserFeed.new(@user)
 
-      logs = user_feed.feed(@offset, @limit)
-      deprecated_logs = remove_deprecated_logs(user_feed, logs)
-      filter_log_ids = filter_log_ids(logs, deprecated_logs)
+      # get feeds with buffer
+      # lazily delete expired logs from redis if any
+      logs = user_feed.feed(@offset, @limit+GET_FEED_LIMIT_BUFFER)
+      expired_logs = remove_expired_logs(user_feed, logs)
+      filtered_log_ids = filter_log_ids(logs, expired_logs).take(@limit)
 
-      sleep_logs = SleepLog.fetch_multi(filter_log_ids, includes: :user)
+      sleep_logs = SleepLog.fetch_multi(filtered_log_ids, includes: :user)
       {
         data: sleep_logs.sort_by { |log| [ log.sleep_duration, log.id ] }.reverse,
         limit: @limit,
-        offset: @offset,
-        count: user_feed.count
+        offset: @offset
       }
     end
 
     private
 
-    def remove_deprecated_logs(user_feed, logs)
-      deprecated_logs = logs.select do |log|
-        log.created_at < leaderboard_threshold
+    def remove_expired_logs(user_feed, logs)
+      expired_logs = logs.select do |log|
+        log.clock_in < leaderboard_threshold
       end
 
-      user_feed.remove_from_feed(deprecated_logs) if deprecated_logs.present?
+      user_feed.remove_from_feed(expired_logs) if expired_logs.present?
 
-      deprecated_logs
+      expired_logs
     end
 
-    def filter_log_ids(logs, deprecated_logs)
-      deprecated_keys = deprecated_logs.map { |log| log.id }.to_set
-      logs.reject! { |log| deprecated_keys.include?(log.id) }
+    def filter_log_ids(logs, expired_logs)
+      expired_keys = expired_logs.map { |log| log.id }.to_set
+      logs.reject! { |log| expired_keys.include?(log.id) }
 
       logs.map { |log| log.id }
     end

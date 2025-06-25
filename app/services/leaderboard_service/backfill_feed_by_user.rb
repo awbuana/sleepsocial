@@ -12,7 +12,7 @@ module LeaderboardService
 
       user_feed = UserFeed.new(@user)
 
-      @followed_user.sleep_logs.where("created_at > ?", leaderboard_threshold).order(:id).find_in_batches do | sleep_logs |
+      @followed_user.sleep_logs.where("clock_in > ?", leaderboard_threshold).order(:id).find_in_batches do | sleep_logs |
         sleep_logs.each do |log|
           # skip sleep log if it's not finalized yet
           next unless log.clock_out
