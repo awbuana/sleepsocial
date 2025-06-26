@@ -24,15 +24,6 @@ RSpec.describe LeaderboardService::BackfillFeedByFollowing, type: :service do
     allow(Racecar).to receive(:produce_async)
     # The `wait_for_delivery` method takes a block. Simulate calling that block.
     allow(Racecar).to receive(:wait_for_delivery).and_yield
-
-
-    # Mock the ActiveRecord Relation for `user.following` for `find_in_batches`.
-    # This is crucial for controlling what followings are "found" and yielded.
-    followings_relation_mock = instance_double(ActiveRecord::Relation)
-    allow(user).to receive(:following).and_return(followings_relation_mock)
-    # Chain the `order` call, making it return the same mock relation.
-    allow(followings_relation_mock).to receive(:order).with(:id).and_return(followings_relation_mock)
-    allow(followings_relation_mock).to receive(:find_in_batches).and_yield([ follow_1, follow_2 ])
   end
 
   after do
@@ -52,10 +43,10 @@ RSpec.describe LeaderboardService::BackfillFeedByFollowing, type: :service do
       end
 
       it 'iterates through the user\'s followings' do
+        expect(Follow).to receive_message_chain(:use_index, :where, :order, :find_in_batches).
+          and_return([ follow_1, follow_2 ])
+
         service.perform
-        # Verify that `order` and `find_in_batches` were called on the `following` relation.
-        expect(user.following).to have_received(:order).with(:id)
-        expect(user.following).to have_received(:find_in_batches)
 
         allow(Racecar).to receive(:produce_async)
       end
@@ -72,11 +63,11 @@ RSpec.describe LeaderboardService::BackfillFeedByFollowing, type: :service do
       end
 
       context 'when the user has 1 followings' do
-        let(:event) { Event::BackfillFeedByUser.new(user.id, follow_1.id) }
+        let(:event) { Event::BackfillFeedByUser.new(user.id, follow_1.target_user_id) }
 
         before do
           # Override `find_in_batches` to yield an empty array.
-          allow(user.following).to receive(:find_in_batches).and_yield([ follow_1 ])
+          allow(Follow).to receive_message_chain(:use_index, :where, :order, :find_in_batches).and_yield([ follow_1 ])
         end
 
         it 'produces an async Kafka event for each followed user' do
@@ -93,7 +84,7 @@ RSpec.describe LeaderboardService::BackfillFeedByFollowing, type: :service do
       context 'when the user has no followings' do
         before do
           # Override `find_in_batches` to yield an empty array.
-          allow(user.following).to receive(:find_in_batches).and_yield([])
+          allow(Follow).to receive_message_chain(:use_index, :where, :order, :find_in_batches).and_yield([])
         end
 
         it 'updates the user\'s last_backfill_at timestamp' do
@@ -127,9 +118,10 @@ RSpec.describe LeaderboardService::BackfillFeedByFollowing, type: :service do
       end
 
       it 'does not query for user\'s followings' do
-        service.perform
         # The service returns early, so `user.following` should not be accessed.
-        expect(user).not_to have_received(:following) # This might need to be stubbed on the user object itself
+        expect(Follow).not_to receive(:use_index)
+
+        service.perform
       end
 
       it 'does not produce any Kafka events' do

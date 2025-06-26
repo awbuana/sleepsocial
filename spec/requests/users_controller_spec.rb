@@ -154,8 +154,8 @@ RSpec.describe "UsersControllers", type: :request do
 
       it "returns a list of users the user is following" do
         expect(json_response['data'].count).to eq(2)
-        expect(json_response['data'].first['id']).to eq(followed_user_2.id)
-        expect(json_response['data'].second['id']).to eq(followed_user_1.id)
+        expect(json_response['data'].first['id']).to eq(follow_record_1.id)
+        expect(json_response['data'].second['id']).to eq(follow_record_2.id)
       end
 
       it "returns pagination metadata" do
@@ -200,8 +200,8 @@ RSpec.describe "UsersControllers", type: :request do
 
       it "returns a list of users who are following the user" do
         expect(json_response['data'].count).to eq(2)
-        expect(json_response['data'].first['id']).to eq(follower_user_2.id)
-        expect(json_response['data'].second['id']).to eq(follower_user_1.id)
+        expect(json_response['data'].first['id']).to eq(follow_record_1.id)
+        expect(json_response['data'].second['id']).to eq(follow_record_2.id)
       end
 
       it "returns pagination metadata" do
