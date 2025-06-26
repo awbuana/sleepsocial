@@ -20,7 +20,7 @@ RSpec.describe LeaderboardService::RemoveUserFromFeed, type: :service do
     Timecop.freeze(Time.current)
 
     allow(UserFeed).to receive(:new).with(user).and_return(user_feed_mock)
-    allow(user_feed_mock).to receive(:feed).and_return([target_user_log_1, target_user_log_2, another_user_log])
+    allow(user_feed_mock).to receive(:feed).and_return([ target_user_log_1, target_user_log_2, another_user_log ])
     allow(user_feed_mock).to receive(:remove_from_feed) # Stub this method, we'll verify it's called.
     allow(Follow).to receive(:find_by).with(user_id: user.id, target_user_id: target_user.id).and_return(nil)
   end
@@ -31,7 +31,6 @@ RSpec.describe LeaderboardService::RemoveUserFromFeed, type: :service do
 
   describe '#perform' do
     context 'when the user does NOT follow the target user' do
-
       it 'fetches the user feed' do
         service.perform
         expect(user_feed_mock).to have_received(:feed)
@@ -39,12 +38,12 @@ RSpec.describe LeaderboardService::RemoveUserFromFeed, type: :service do
 
       it 'removes only the target user\'s logs from the feed' do
         service.perform
-        expect(user_feed_mock).to have_received(:remove_from_feed).with([target_user_log_1, target_user_log_2])
+        expect(user_feed_mock).to have_received(:remove_from_feed).with([ target_user_log_1, target_user_log_2 ])
       end
 
       context 'and there are no logs from the target user in the feed' do
         before do
-          allow(user_feed_mock).to receive(:feed).and_return([another_user_log])
+          allow(user_feed_mock).to receive(:feed).and_return([ another_user_log ])
         end
 
         it 'calls remove_from_feed with an empty array' do

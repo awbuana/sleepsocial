@@ -40,11 +40,11 @@ RSpec.describe UserFeed, type: :model do
     before do
       # Mock ZRANGE to return our sample JSON strings.
       allow(REDIS).to receive(:call).with("ZRANGE", feed_key, 0, -1, "REV")
-                                     .and_return([redis_member_json_1, redis_member_json_2])
+                                     .and_return([ redis_member_json_1, redis_member_json_2 ])
       allow(REDIS).to receive(:call).with("ZRANGE", feed_key, 0, 0, "REV") # for limit 1
-                                     .and_return([redis_member_json_1])
+                                     .and_return([ redis_member_json_1 ])
       allow(REDIS).to receive(:call).with("ZRANGE", feed_key, 1, 1, "REV") # for offset 1, limit 1
-                                     .and_return([redis_member_json_2])
+                                     .and_return([ redis_member_json_2 ])
     end
 
     it 'calls ZRANGE on Redis with correct key and range for default params' do
@@ -125,10 +125,10 @@ RSpec.describe UserFeed, type: :model do
     let(:expected_member_key_json_2) { { uid: 789, id: 2, ts: clock_in_time_2.strftime("%Y%m%dT%H%M%S%z") }.to_json }
 
     it 'calls ZREM on Redis with correct key and member keys' do
-      members_to_remove = [member_to_remove_1, member_to_remove_2]
+      members_to_remove = [ member_to_remove_1, member_to_remove_2 ]
       user_feed.remove_from_feed(members_to_remove)
 
-      expect(REDIS).to have_received(:call).with("ZREM", feed_key, [expected_member_key_json_1, expected_member_key_json_2])
+      expect(REDIS).to have_received(:call).with("ZREM", feed_key, [ expected_member_key_json_1, expected_member_key_json_2 ])
     end
 
     it 'does not call ZREM if the members array is blank' do

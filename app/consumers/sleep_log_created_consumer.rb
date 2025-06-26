@@ -15,7 +15,7 @@ class SleepLogCreatedConsumer < BaseConsumer
 
     user = sleep_log.user
     # ordering by id confuses MySQL, lead to use primary index
-    Follow.use_index('index_follows_on_target_user_id').where(target_user: user).select(:user_id, :id).order(:id).find_in_batches do | followers |
+    Follow.use_index("index_follows_on_target_user_id").where(target_user: user).select(:user_id, :id).order(:id).find_in_batches do | followers |
       followers.each do |follower|
         event = Event::InsertLogToFeed.new(follower.user_id, sleep_log_id)
         Racecar.produce_sync(value: event.payload, topic: event.topic_name, partition_key: event.routing_key)

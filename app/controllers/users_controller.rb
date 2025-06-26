@@ -28,7 +28,7 @@ class UsersController < ApplicationController
   # GET /users/1/following
   def following
     # ordering by id confuses MySQL, lead to use primary index
-    paginator = Follow.use_index('index_follows_on_user_id').where(user: @user).preload(:user, :target_user).cursor_paginate(**pagination_params.merge(order: {id: :asc}))
+    paginator = Follow.use_index("index_follows_on_user_id").where(user: @user).preload(:user, :target_user).cursor_paginate(**pagination_params.merge(order: { id: :asc }))
     page = paginator.fetch
 
     render_serializer page.records, FollowSerializer, meta: {
@@ -39,8 +39,8 @@ class UsersController < ApplicationController
 
   # GET /users/1/followers
   def followers
-     # ordering by id confuses MySQL, lead to use primary index
-    paginator = Follow.use_index('index_follows_on_target_user_id').where(target_user: @user).preload(:user, :target_user).cursor_paginate(**pagination_params.merge(order: {id: :asc}))
+    # ordering by id confuses MySQL, lead to use primary index
+    paginator = Follow.use_index("index_follows_on_target_user_id").where(target_user: @user).preload(:user, :target_user).cursor_paginate(**pagination_params.merge(order: { id: :asc }))
     page = paginator.fetch
 
     render_serializer page.records, FollowSerializer, meta: {

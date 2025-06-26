@@ -55,7 +55,7 @@ RSpec.describe LeaderboardService::BackfillFeedByUser, type: :service do
         allow(followed_user.sleep_logs).to receive(:find_in_batches) do |&block|
           # Filter logs by clock_in > leaderboard_threshold_time before yielding.
           # The mock relation already handles `where` and `order`, so here we just simulate yielding.
-          relevant_logs = [finished_log_1, finished_log_2_old, pending_log, finished_log_3].select do |log|
+          relevant_logs = [ finished_log_1, finished_log_2_old, pending_log, finished_log_3 ].select do |log|
             log.clock_in > leaderboard_threshold_time
           end.sort_by(&:id) # Sort by ID as per `order(:id)`
 

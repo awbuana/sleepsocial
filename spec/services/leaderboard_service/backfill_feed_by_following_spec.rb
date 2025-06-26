@@ -32,7 +32,7 @@ RSpec.describe LeaderboardService::BackfillFeedByFollowing, type: :service do
     allow(user).to receive(:following).and_return(followings_relation_mock)
     # Chain the `order` call, making it return the same mock relation.
     allow(followings_relation_mock).to receive(:order).with(:id).and_return(followings_relation_mock)
-    allow(followings_relation_mock).to receive(:find_in_batches).and_yield([follow_1, follow_2])
+    allow(followings_relation_mock).to receive(:find_in_batches).and_yield([ follow_1, follow_2 ])
   end
 
   after do
@@ -72,11 +72,11 @@ RSpec.describe LeaderboardService::BackfillFeedByFollowing, type: :service do
       end
 
       context 'when the user has 1 followings' do
-        let(:event) { Event::BackfillFeedByUser.new(user.id, follow_1.id)}
+        let(:event) { Event::BackfillFeedByUser.new(user.id, follow_1.id) }
 
         before do
           # Override `find_in_batches` to yield an empty array.
-          allow(user.following).to receive(:find_in_batches).and_yield([follow_1])
+          allow(user.following).to receive(:find_in_batches).and_yield([ follow_1 ])
         end
 
         it 'produces an async Kafka event for each followed user' do

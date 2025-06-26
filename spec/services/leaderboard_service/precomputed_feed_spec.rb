@@ -47,7 +47,7 @@ RSpec.describe LeaderboardService::PrecomputedFeed, type: :service do
     let(:user_feed_members) do
       [
         UserFeed::Member.new(valid_sleep_log_1.id, valid_sleep_log_1.user_id, valid_sleep_log_1.clock_in),
-        UserFeed::Member.new(valid_sleep_log_2.id, valid_sleep_log_2.user_id, valid_sleep_log_2.clock_in),
+        UserFeed::Member.new(valid_sleep_log_2.id, valid_sleep_log_2.user_id, valid_sleep_log_2.clock_in)
       ] + expired_logs
     end
 
@@ -59,8 +59,8 @@ RSpec.describe LeaderboardService::PrecomputedFeed, type: :service do
 
       # Configure `SleepLog.fetch_multi` to return the actual ActiveRecord objects
       # when it's called with the IDs of the valid (non-expired) logs.
-      allow(SleepLog).to receive(:fetch_multi).with([valid_sleep_log_1.id, valid_sleep_log_2.id], includes: :user)
-                                              .and_return([valid_sleep_log_1, valid_sleep_log_2])
+      allow(SleepLog).to receive(:fetch_multi).with([ valid_sleep_log_1.id, valid_sleep_log_2.id ], includes: :user)
+                                              .and_return([ valid_sleep_log_1, valid_sleep_log_2 ])
     end
 
     context 'with default limit and offset' do
@@ -80,14 +80,14 @@ RSpec.describe LeaderboardService::PrecomputedFeed, type: :service do
       it 'fetches only non-expired sleep logs from the database' do
         service.perform
         # Expect `fetch_multi` to be called with the IDs of valid logs.
-        expect(SleepLog).to have_received(:fetch_multi).with([valid_sleep_log_1.id, valid_sleep_log_2.id], includes: :user)
+        expect(SleepLog).to have_received(:fetch_multi).with([ valid_sleep_log_1.id, valid_sleep_log_2.id ], includes: :user)
       end
 
       it 'returns sleep logs sorted by sleep_duration descending, then id descending' do
         result = service.perform
         # The expected order for [valid_sleep_log_1 (200), valid_sleep_log_2 (150)]
         # should be valid_sleep_log_1 then valid_sleep_log_2.
-        expect(result[:data]).to eq([valid_sleep_log_1, valid_sleep_log_2])
+        expect(result[:data]).to eq([ valid_sleep_log_1, valid_sleep_log_2 ])
       end
 
       it 'returns the correct limit and offset in the response' do
@@ -115,7 +115,7 @@ RSpec.describe LeaderboardService::PrecomputedFeed, type: :service do
 
         it 'fetches all available valid logs' do
           service.perform
-          expect(SleepLog).to have_received(:fetch_multi).with([valid_sleep_log_1.id, valid_sleep_log_2.id], includes: :user)
+          expect(SleepLog).to have_received(:fetch_multi).with([ valid_sleep_log_1.id, valid_sleep_log_2.id ], includes: :user)
         end
       end
 
@@ -129,14 +129,14 @@ RSpec.describe LeaderboardService::PrecomputedFeed, type: :service do
         end
 
         before do
-          allow(SleepLog).to receive(:fetch_multi).with([valid_sleep_log_2.id], includes: :user)
-                                                  .and_return([valid_sleep_log_2])
+          allow(SleepLog).to receive(:fetch_multi).with([ valid_sleep_log_2.id ], includes: :user)
+                                                  .and_return([ valid_sleep_log_2 ])
         end
 
         it 'returns all available valid logs, up to the limit' do
           result = service.perform
           expect(result[:data].size).to eq(1)
-          expect(result[:data]).to eq([valid_sleep_log_2])
+          expect(result[:data]).to eq([ valid_sleep_log_2 ])
         end
       end
 
@@ -161,8 +161,8 @@ RSpec.describe LeaderboardService::PrecomputedFeed, type: :service do
         # @offset is 1, @limit is 1, GET_FEED_LIMIT_BUFFER is 50.
         # So, feed call will be with (1, 1 + 50) = (1, 51).
         allow(user_feed_mock).to receive(:feed).with(1, 51).and_return(user_feed_members[1..-1]) # Simulate offset
-        allow(SleepLog).to receive(:fetch_multi).with([valid_sleep_log_2.id], includes: :user)
-                                                .and_return([valid_sleep_log_2])
+        allow(SleepLog).to receive(:fetch_multi).with([ valid_sleep_log_2.id ], includes: :user)
+                                                .and_return([ valid_sleep_log_2 ])
       end
 
       it 'retrieves feeds with the specified offset and buffered limit' do
@@ -174,7 +174,7 @@ RSpec.describe LeaderboardService::PrecomputedFeed, type: :service do
         result = service.perform
         # Given the offset 1 and limit 1, and the sorted non-expired logs [valid_sleep_log_1, valid_sleep_log_2],
         # it should return only valid_sleep_log_2.
-        expect(result[:data]).to eq([valid_sleep_log_2])
+        expect(result[:data]).to eq([ valid_sleep_log_2 ])
         expect(result[:limit]).to eq(1)
         expect(result[:offset]).to eq(1)
       end
@@ -183,13 +183,13 @@ RSpec.describe LeaderboardService::PrecomputedFeed, type: :service do
     context 'when fetch_multi returns logs not in order' do
       before do
         # The service sorts them after fetching, so this should still produce the correct sorted output.
-        allow(SleepLog).to receive(:fetch_multi).with([valid_sleep_log_1.id, valid_sleep_log_2.id], includes: :user)
-                                                .and_return([valid_sleep_log_2, valid_sleep_log_1]) # Return in wrong order
+        allow(SleepLog).to receive(:fetch_multi).with([ valid_sleep_log_1.id, valid_sleep_log_2.id ], includes: :user)
+                                                .and_return([ valid_sleep_log_2, valid_sleep_log_1 ]) # Return in wrong order
       end
 
       it 'correctly sorts the sleep logs by sleep_duration and id' do
         result = service.perform
-        expect(result[:data]).to eq([valid_sleep_log_1, valid_sleep_log_2]) # Still expects correct sorted order
+        expect(result[:data]).to eq([ valid_sleep_log_1, valid_sleep_log_2 ]) # Still expects correct sorted order
       end
     end
   end

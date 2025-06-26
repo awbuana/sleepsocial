@@ -43,7 +43,7 @@ else
       clock_in = Time.current - random_seconds_ago.seconds
 
       # Ensure clock_in is not older than 4 days (redundant if random_seconds_ago logic is tight, but good safeguard)
-      clock_in = [clock_in, min_clock_in].max
+      clock_in = [ clock_in, min_clock_in ].max
 
       # Generate clock_out, ensuring it's after clock_in.
       # Sleep duration can be between 4 hours and 10 hours.

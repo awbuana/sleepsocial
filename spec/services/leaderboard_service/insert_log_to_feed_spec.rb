@@ -22,7 +22,6 @@ RSpec.describe LeaderboardService::InsertLogToFeed, type: :service do
 
   describe '#perform' do
     context 'when the sleep log is finished and the user follows the log owner' do
-      
       it 'calls add_to_feed with the sleep log' do
         service.perform
         expect(user_feed_mock).to have_received(:add_to_feed).with(sleep_log)
