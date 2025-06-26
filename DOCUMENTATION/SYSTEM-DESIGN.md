@@ -59,16 +59,16 @@ Updating Aggregated Data: Based on the consumed sleep logs, job consumers update
 #### 3.5. Memcached
 Memcached is used as a distributed caching layer to improve the performance of data retrieval.
 
-Identity Cache: It stores frequently accessed identity-related data. When the API needs user identity information, it first checks Memcached.
+Identity Cache: It stores frequently accessed models data. When the API needs model information, it first checks Memcached.
 
 Reduced Database Load: By serving data from cache, it reduces the load on MySQL, making the system more responsive.
 
 #### 3.6. Redis
-Redis is utilized for its high-speed data structures, making it ideal for real-time operations.
+Redis is utilized for its high-speed data structures, making it ideal for our leaderboards data.
 
 Feeds and Leaderboards: It is specifically used for building and serving user feeds and global/friends leaderboards. Its in-memory nature allows for very fast read/write operations crucial for these dynamic features.
 
-Job Consumer Interaction: Job consumers write processed sleep data to Redis to update these feeds and leaderboards.
+Job Consumer Interaction: Job consumers write processed sleep data to Redis to update these feeds and leaderboards. Consumer also discard expired logs lazily during read.
 
 #### 3.7. MySQL
 MySQL serves as the primary relational database for durable data storage.
@@ -101,7 +101,7 @@ API returns feed: The API sends the retrieved feed data back to the user.
 ### 5. Benefits of this Design
 Scalability: The use of Kafka for asynchronous processing and Redis for real-time data allows the system to handle a high volume of concurrent users and data.
 
-Durability: MySQL ensures that all sleep log data is durably stored and protected.
+Durability: MySQL ensures that all sleep log data is durably stored.
 
 Performance: Memcached provides fast access to frequently requested data, while Redis offers high-speed operations for feeds and leaderboards.
 
@@ -111,13 +111,14 @@ Real-time Capabilities: Redis enables the creation of real-time feeds and leader
 
 This design ensures a robust, scalable, and performant system for sharing and managing sleep logs.
 
-### 6. Reliability & Scalability Aspects
+### 6. Reliability & Scalability
 
 #### User Feed / Leaderboards
 
 ![alt text](redis-design.png)
 
-Since we precomputed the leaderboards in Redis, We can retrieve leaderboard very fast. The drawback using redis is we might missing data if the redis restart. To tackle this problem, we can setup Redis Cluster / KeyDB with primary and replica setup. This setup will increase our reliability by partitioning the data, increase scalability, and fail-over mechanism if the primary fails.
+Since we precomputed the leaderboards in Redis, We can retrieve leaderboard very fast. We build the dashboard using **sorted sets**, so our data sorted by score, or sleep duration.
+The drawback from using redis is we might missing data if the redis restart. To tackle this problem, we can setup Redis Cluster / KeyDB with primary and replica setup. This setup will increase our reliability by partitioning the data, increase scalability, and fail-over mechanism if the primary fails.
 
 #### Caching Models
 
