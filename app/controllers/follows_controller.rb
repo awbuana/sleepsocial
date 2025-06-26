@@ -5,9 +5,11 @@ class FollowsController < ApplicationController
   # GET /follows
   def index
     scope = if params[:user_id]
-      Follow.where(user_id: params[:user_id])
+      Follow.use_index("index_follows_on_user_id").where(user_id: params[:user_id])
+    elsif params[:target_user_id]
+      Follow.use_index("index_follows_on_target_user_id").where(target_user_id: params[:target_user_id])
     elsif current_user.present?
-      Follow.where(user_id: current_user.id)
+      Follow.use_index("index_follows_on_user_id").where(user_id: current_user.id)
     else
       Follow.all.order(id: :desc)
     end
