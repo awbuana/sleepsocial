@@ -3,11 +3,11 @@ As a user,
 I want to be able to clock in (go to bed) and clock out (wake up),
 so I can track my sleep times.
 
-**Assumptions**
+## Assumptions
 
 1. User can clock in anytime, not only in the night
 2. User must complete previous clock in first, before making any other clock in
-3. User can clock in many times as long as it doesn't overlapped with other clock in
+3. User can clock in **many times and whenever** they want as long as it doesn't overlapped with existing clock in
 4. Leaderboard doesn't show on-going clock in
 
 ### Scenario: Successful Clock In for Going to Bed
