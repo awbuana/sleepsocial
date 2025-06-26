@@ -12,8 +12,9 @@ module LeaderboardService
       user_feed = UserFeed.new(@user)
 
       # get feeds with buffer
-      # lazily delete expired logs from redis if any
       logs = user_feed.feed(@offset, @limit+GET_FEED_LIMIT_BUFFER)
+
+      # lazily delete expired logs from redis if any
       expired_logs = remove_expired_logs(user_feed, logs)
       filtered_log_ids = filter_log_ids(logs, expired_logs).take(@limit)
 
