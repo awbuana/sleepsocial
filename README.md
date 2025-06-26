@@ -1,4 +1,4 @@
-# README
+# Sleepsocial
 
 Sleepsocial is designed to allow users to log their sleep, share it, and view sleep-related data such as feeds and leaderboards.
 
