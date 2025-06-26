@@ -22,4 +22,4 @@ sleepsocial(dev)> uf.count
 => 16087 # 16k
 ```
 
-![leaderboard](leaderboard.png)
+![leaderboard](evidences/leaderboard.png)
