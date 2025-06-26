@@ -64,3 +64,4 @@ make fanout-consumer
 - API Documentation [link](DOCUMENTATION/API.yaml)
 - Feature Requirements [link](DOCUMENTATION/FEATURE.md)
 - System Design [link](DOCUMENTATION/SYSTEM-DESIGN.md)
+- Performance Test [link](DOCUMENTATION/PERFORMANCE-TEST.md)
