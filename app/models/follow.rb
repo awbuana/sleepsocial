@@ -4,6 +4,10 @@ class Follow < ApplicationRecord
 
   validate :cannot_follow_self
 
+  def self.use_index(index)
+    from("#{self.table_name} USE INDEX(#{index})")
+  end
+
   private
 
   def cannot_follow_self
