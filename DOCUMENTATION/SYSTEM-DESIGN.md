@@ -70,6 +70,26 @@ Feeds and Leaderboards: It is specifically used for building and serving user fe
 
 Job Consumer Interaction: Job consumers write processed sleep data to Redis to update these feeds and leaderboards. Consumer also discard expired logs lazily during read.
 
+**Leaderboard Implementation**
+
+We use sorted set to store leaderboard, and the data structure is
+```
+key: feed:{user_id}
+
+value: JSON{
+    id: log_id,
+    user_id: user_id, # log owner id
+    clock_in: clock_in
+}
+
+score: sleep duration in minutes
+```
+
+Value data format is using JSON, so we can extend more functionality if needed.
+- We store sleep log's user_id so if we get **unfollow event**, we can discard the log without read from database
+- We store clock in data so if the log is considered expired, we can filter out immediately. We also use that to refresh user feed
+
+
 #### 3.7. MySQL
 MySQL serves as the primary relational database for durable data storage.
 

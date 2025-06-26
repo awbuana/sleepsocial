@@ -9,6 +9,7 @@ so I can track my sleep times.
 2. User must complete previous clock in first, before making any other clock in
 3. User can clock in **many times and whenever** they want as long as it doesn't overlapped with existing clock in
 4. Leaderboard doesn't show on-going clock in
+5. Leaderboard's log expiration is based on clock in, not created_at
 
 ### Scenario: Successful Clock In for Going to Bed
 ```
