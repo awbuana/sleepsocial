@@ -39,8 +39,10 @@ module LeaderboardService
     end
 
     def filter_log_ids(logs, expired_logs)
-      expired_keys = expired_logs.map { |log| log.id }.to_set
-      logs.reject! { |log| expired_keys.include?(log.id) }
+      if expired_logs.present?
+        expired_keys = expired_logs.map { |log| log.id }.to_set
+        logs.reject! { |log| expired_keys.include?(log.id) }
+      end
 
       logs.map { |log| log.id }
     end

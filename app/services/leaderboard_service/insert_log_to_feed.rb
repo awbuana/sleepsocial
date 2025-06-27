@@ -9,6 +9,9 @@ module LeaderboardService
       # only show finished sleep log
       return unless @sleep_log.clock_out.present?
 
+      # skip expired log
+      return if @sleep_log.clock_in < leaderboard_threshold
+
       # return if user not follow another user anymore
       follow = Follow.find_by(user_id: @user.id, target_user_id: @sleep_log.user_id)
       return unless follow

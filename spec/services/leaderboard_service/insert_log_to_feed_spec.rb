@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe LeaderboardService::InsertLogToFeed, type: :service do
   let!(:user) { create(:user) }
   let!(:feeder_user) { create(:user) }
-  let!(:sleep_log) { create(:sleep_log, user: feeder_user, clock_out: Time.current) } # Default to a finished log
+  let!(:sleep_log) { create(:sleep_log, user: feeder_user, clock_in: Time.current - 7.hours, clock_out: Time.current) } # Default to a finished log
 
   let(:service) { described_class.new(user, sleep_log) }
 
@@ -83,6 +83,24 @@ RSpec.describe LeaderboardService::InsertLogToFeed, type: :service do
         # No follow relationship
         allow(Follow).to receive(:find_by).with(user_id: user.id, target_user_id: feeder_user.id).and_return(nil)
       end
+
+      it 'does not call add_to_feed' do
+        service.perform
+        expect(user_feed_mock).not_to have_received(:add_to_feed)
+      end
+
+      it 'does not call resize_feed' do
+        service.perform
+        expect(user_feed_mock).not_to have_received(:resize_feed)
+      end
+
+      it 'returns nil due to early return' do
+        expect(service.perform).to be_nil
+      end
+    end
+
+    context 'when log is older than threshold' do
+      let!(:sleep_log) { create(:sleep_log, user: feeder_user, clock_in: Time.current - 30.days, clock_out: Time.current) }
 
       it 'does not call add_to_feed' do
         service.perform
