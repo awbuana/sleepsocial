@@ -3,6 +3,8 @@ FactoryBot.define do
     association :user, factory: :user
     clock_in { 8.hours.ago } # Default clock_in to 8 hours ago for convenience
     clock_out { Time.current } # Default clock_out to now
+    created_at { Time.current }
+    updated_at { Time.current }
 
     trait :invalid_times do
       clock_in { Time.current }

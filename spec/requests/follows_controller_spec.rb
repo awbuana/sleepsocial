@@ -27,9 +27,11 @@ RSpec.describe "FollowsControllers", type: :request do
 
       it "returns a successful response" do
         expect(response).to be_successful
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns all follows ordered by id descending" do
+        expect(response).to match_response_schema("follow", list: true)
         expect(json_response['data'].map { |f| f['id'] }).to match_array([ follow2.id, follow1.id ])
         expect(json_response['data'].size).to eq(2)
       end
@@ -40,9 +42,11 @@ RSpec.describe "FollowsControllers", type: :request do
 
       it "returns a successful response" do
         expect(response).to be_successful
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns follows for the specified user_id" do
+        expect(response).to match_response_schema("follow", list: true)
         expect(json_response['data'].map { |f| f['id'] }).to eq([ follow1.id ])
         expect(json_response['data'].size).to eq(1)
       end
@@ -56,9 +60,11 @@ RSpec.describe "FollowsControllers", type: :request do
 
       it "returns a successful response" do
         expect(response).to be_successful
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns follows for the current_user" do
+        expect(response).to match_response_schema("follow", list: true)
         expect(json_response['data'].map { |f| f['id'] }).to eq([ follow_by_current_user.id ])
         expect(json_response['data'].size).to eq(1)
       end
@@ -99,7 +105,7 @@ RSpec.describe "FollowsControllers", type: :request do
   describe "POST /follows" do
     let(:target_user) { create(:user) }
     let(:follow_params) { { follow: { target_user_id: target_user.id } } }
-    let(:mock_follow) { instance_double(Follow, id: 1, user_id: authenticated_user.id, target_user_id: target_user.id) }
+    let(:mock_follow) { create(:follow, id: 1, user_id: authenticated_user.id, target_user_id: target_user.id) }
 
     before do
       allow(FollowService).to receive(:follow).and_return(mock_follow)
@@ -109,6 +115,7 @@ RSpec.describe "FollowsControllers", type: :request do
       it "returns a created status" do
         post '/follows', params: follow_params, as: :json
         expect(response).to have_http_status(:created)
+        expect(response).to match_response_schema("follow")
       end
     end
 
@@ -142,6 +149,7 @@ RSpec.describe "FollowsControllers", type: :request do
       it "returns a successful message" do
         delete '/follows', params: unfollow_params, as: :json
         expect(response).to be_successful
+        expect(response).to have_http_status(:ok)
         expect(json_response['message']).to eq("Unfollow successfully")
       end
     end

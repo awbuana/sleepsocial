@@ -16,6 +16,7 @@
 !/log/.keep
 !/tmp/.keep
 /vendor*
+/coverage
 
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*

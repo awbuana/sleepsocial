@@ -35,6 +35,7 @@ RSpec.describe "LeaderboardsControllers", type: :request do
 
       it "returns a successful response" do
         expect(response).to be_successful
+        expect(response).to have_http_status(:ok)
       end
 
       it "calls LeaderboardService.precomputed_feed with correct parameters" do
@@ -43,6 +44,7 @@ RSpec.describe "LeaderboardsControllers", type: :request do
       end
 
       it "returns the feed data as SleepLogSerializer" do
+        expect(response).to match_response_schema("sleep_log", list: true)
         expect(json_response['data'].size).to eq(mock_feed_data.size)
         expect(json_response['data'].first['id']).to eq(mock_feed_data.first.id)
         expect(json_response['data'].last['id']).to eq(mock_feed_data.last.id)

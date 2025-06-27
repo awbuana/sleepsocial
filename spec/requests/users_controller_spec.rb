@@ -16,10 +16,12 @@ RSpec.describe "UsersControllers", type: :request do
       before { get '/users' }
 
       it "returns a successful response" do
+        expect(response).to have_http_status(:ok)
         expect(response).to be_successful
       end
 
       it "returns all users" do
+        expect(response).to match_response_schema("user", list: true)
         expect(json_response['data'].map { |u| u['id'] }).to match_array(User.all.order(id: :asc).map(&:id))
         expect(json_response['data'].size).to eq(5)
       end
@@ -46,11 +48,13 @@ RSpec.describe "UsersControllers", type: :request do
 
       it "returns a successful response" do
         expect(response).to be_successful
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns the requested user" do
         expect(json_response['data']['id']).to eq(user.id)
         expect(json_response['data']['name']).to eq(user.name)
+        expect(response).to match_response_schema("user")
       end
     end
 
@@ -83,6 +87,7 @@ RSpec.describe "UsersControllers", type: :request do
 
       it "returns the created user" do
         post '/users', params: user_params, as: :json
+        expect(response).to match_response_schema("user")
         expect(json_response['data']['name']).to eq("New User")
         expect(json_response['data']['id']).not_to be_nil
       end
@@ -150,9 +155,11 @@ RSpec.describe "UsersControllers", type: :request do
 
       it "returns a successful response" do
         expect(response).to be_successful
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns a list of users the user is following" do
+        expect(response).to match_response_schema("follow", list: true)
         expect(json_response['data'].count).to eq(2)
         expect(json_response['data'].first['id']).to eq(follow_record_1.id)
         expect(json_response['data'].second['id']).to eq(follow_record_2.id)
@@ -196,9 +203,11 @@ RSpec.describe "UsersControllers", type: :request do
 
       it "returns a successful response" do
         expect(response).to be_successful
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns a list of users who are following the user" do
+        expect(response).to match_response_schema("follow", list: true)
         expect(json_response['data'].count).to eq(2)
         expect(json_response['data'].first['id']).to eq(follow_record_1.id)
         expect(json_response['data'].second['id']).to eq(follow_record_2.id)
@@ -218,6 +227,7 @@ RSpec.describe "UsersControllers", type: :request do
       end
 
       it "returns an empty list" do
+        expect(response).to have_http_status(:ok)
         expect(json_response['data']).to be_empty
       end
 

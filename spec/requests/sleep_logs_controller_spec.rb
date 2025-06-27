@@ -29,10 +29,12 @@ RSpec.describe "SleepLogsControllers", type: :request do
       end
 
       it "returns a successful response" do
+        expect(response).to have_http_status(:ok)
         expect(response).to be_successful
       end
 
       it "returns all sleep logs" do
+        expect(response).to match_response_schema("sleep_log", list: true)
         expect(json_response['data'].map { |sl| sl['id'] }).to match_array(SleepLog.all.map(&:id))
         expect(json_response['data'].size).to eq(5)
       end
@@ -72,9 +74,11 @@ RSpec.describe "SleepLogsControllers", type: :request do
 
     it "returns a successful response" do
       expect(response).to be_successful
+      expect(response).to have_http_status(:ok)
     end
 
     it "returns the requested sleep log" do
+      expect(response).to match_response_schema("sleep_log")
       expect(json_response['data']['id']).to eq(sleep_log.id)
       expect(json_response['data']['user']['id']).to eq(sleep_log.user_id)
     end
@@ -84,7 +88,7 @@ RSpec.describe "SleepLogsControllers", type: :request do
     let(:clock_in_time) { Time.zone.now.beginning_of_hour - 8.hours }
     let(:clock_out_time) { Time.zone.now.beginning_of_hour }
     let(:sleep_log_params) { { clock_in: clock_in_time, clock_out: clock_out_time } }
-    let(:mock_sleep_log) { instance_double(SleepLog, id: 1, user_id: authenticated_user.id, clock_in: clock_in_time, clock_out: clock_out_time) }
+    let(:mock_sleep_log) { create(:sleep_log, user_id: authenticated_user.id, clock_in: clock_in_time, clock_out: clock_out_time) }
 
     before do
       # Stub the `create_log` method on `SleepLogService`
@@ -100,6 +104,7 @@ RSpec.describe "SleepLogsControllers", type: :request do
       it "creates a new SleepLog and returns a created status" do
         post '/sleep-logs', params: sleep_log_params, as: :json
         expect(response).to have_http_status(:created)
+        expect(response).to match_response_schema("sleep_log")
       end
     end
 
@@ -120,12 +125,12 @@ RSpec.describe "SleepLogsControllers", type: :request do
     let!(:sleep_log_to_clock_out) { create(:sleep_log, user: authenticated_user, clock_in: 8.hours.ago, clock_out: nil) }
     let(:clock_out_time) { Time.zone.now.beginning_of_minute }
     let(:update_params) { { clock_out: clock_out_time } }
-    let(:mock_updated_sleep_log) { build(:sleep_log, id: sleep_log_to_clock_out.id, user_id: authenticated_user.id, clock_in: sleep_log_to_clock_out.clock_in, clock_out: clock_out_time) }
 
     context "when authenticated" do
       before do
         expect(SleepLog).to receive(:find).and_return(sleep_log_to_clock_out)
         expect(SleepLogService).to receive(:clock_out).with(authenticated_user, sleep_log_to_clock_out, clock_out_time)
+        sleep_log_to_clock_out.clock_out = clock_out_time
       end
 
       it "calls SleepLogService.clock_out with correct parameters" do
@@ -135,7 +140,9 @@ RSpec.describe "SleepLogsControllers", type: :request do
       it "returns a successful response with the updated sleep log" do
         patch "/sleep-logs/#{sleep_log_to_clock_out.id}/clock-out", params: update_params, as: :json
         expect(response).to be_successful
-        expect(json_response['data']['id']).to eq(mock_updated_sleep_log.id)
+        expect(response).to have_http_status(:ok)
+        expect(response).to match_response_schema("sleep_log")
+        expect(json_response['data']['id']).to eq(sleep_log_to_clock_out.id)
       end
     end
 

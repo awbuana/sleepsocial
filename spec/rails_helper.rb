@@ -79,3 +79,11 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+RSpec::Matchers.define :match_response_schema do |schema, options = { list: false }|
+  match do |response|
+    schema_directory = "#{Dir.pwd}/spec/support/api/schemas"
+    schema_path = "#{schema_directory}/#{schema}.json"
+    JSON::Validator.validate!(schema_path, JSON.parse(response.body)['data'],  options.merge(strict: true, clear_cache: true))
+  end
+end

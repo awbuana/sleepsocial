@@ -61,6 +61,8 @@ group :development, :test do
   gem "factory_bot_rails"
 
   gem "timecop"
+
+  gem "json-schema"
 end
 
 gem "simplecov", require: false, group: :test

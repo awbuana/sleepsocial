@@ -1,0 +1,76 @@
+{
+  "title": "SleepLog",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "The unique identifier of the sleep log entry."
+    },
+    "user": {
+      "title": "User",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "The unique identifier of the user."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the user."
+        },
+        "num_following": {
+          "type": "integer",
+          "description": "The number of users this user is following."
+        },
+        "num_followers": {
+          "type": "integer",
+          "description": "The number of followers this user has."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the user account was created."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "num_following",
+        "num_followers",
+        "created_at"
+      ]
+    },
+    "clock_in": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the user clocked in (went to bed)."
+    },
+    "clock_out": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Timestamp when the user clocked out (woke up). Null if sleep is ongoing."
+    },
+    "sleep_duration_in_minutes": {
+      "type": "number",
+      "description": "The duration of sleep in minutes. Calculated value."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the sleep log entry was created."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the sleep log entry was last updated."
+    }
+  },
+  "required": [
+    "id",
+    "user",
+    "clock_in",
+    "sleep_duration_in_minutes",
+    "created_at",
+    "updated_at"
+  ]
+}
