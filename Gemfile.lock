@@ -107,6 +107,10 @@ GEM
       reline (>= 0.3.8)
     diff-lcs (1.6.2)
     docile (1.4.1)
+    doorkeeper (5.8.2)
+      railties (>= 5)
+    doorkeeper-jwt (0.4.2)
+      jwt (>= 2.1)
     dotenv (3.1.8)
     drb (2.2.3)
     ed25519 (1.4.0)
@@ -139,6 +143,8 @@ GEM
       addressable (~> 2.8)
       bigdecimal (~> 3.1)
     jsonapi-renderer (0.2.2)
+    jwt (3.1.2)
+      base64
     kamal (2.7.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -367,6 +373,8 @@ DEPENDENCIES
   cityhash
   dalli
   debug
+  doorkeeper (~> 5.8)
+  doorkeeper-jwt (~> 0.4)
   dotenv
   factory_bot_rails
   faker
