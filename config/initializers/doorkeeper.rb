@@ -7,10 +7,11 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    raise "Please configure doorkeeper resource_owner_authenticator block located in #{__FILE__}"
+    # raise "Please configure doorkeeper resource_owner_authenticator block located in #{__FILE__}"
     # Put your resource owner authentication logic here.
     # Example implementation:
-    #   User.find_by(id: session[:user_id]) || redirect_to(new_user_session_url)
+    #
+    current_user || redirect_to(new_user_session_url)
   end
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
@@ -18,16 +19,16 @@ Doorkeeper.configure do
   # adding oauth authorized applications. In other case it will return 403 Forbidden response
   # every time somebody will try to access the admin web interface.
   #
-  # admin_authenticator do
-  #   # Put your admin authentication logic here.
-  #   # Example implementation:
-  #
-  #   if current_user
-  #     head :forbidden unless current_user.admin?
-  #   else
-  #     redirect_to sign_in_url
-  #   end
-  # end
+  admin_authenticator do
+    # Put your admin authentication logic here.
+    # Example implementation:
+
+    # if current_user
+    #   head :forbidden unless current_user.admin?
+    # else
+    #   redirect_to sign_in_url
+    # end
+  end
 
   # You can use your own model classes if you need to extend (or even override) default
   # Doorkeeper models such as `Application`, `AccessToken` and `AccessGrant.
@@ -176,7 +177,7 @@ Doorkeeper.configure do
   # Require non-confidential clients to use PKCE when using an authorization code
   # to obtain an access_token (disabled by default)
   #
-  force_pkce
+  #force_pkce
 
   # Hash access and refresh tokens before persisting them.
   # This will disable the possibility to use +reuse_access_token+
@@ -527,5 +528,24 @@ Doorkeeper.configure do
   #
   # realm "Doorkeeper"
   #
-  encryption_method :rs256
+end
+
+Doorkeeper::JWT.configure do
+  token_payload do |opts|
+    user = User.find(opts[:resource_owner_id])
+
+    {
+      iss: 'auth.sleepsocial.com',
+      iat: Time.current.utc.to_i,
+      aud: 'http://api.sleepsocial.com',
+
+      # @see JWT reserved claims - https://tools.ietf.org/html/draft-jones-json-web-token-07#page-7
+      jti: SecureRandom.uuid,
+      sub: user.id,
+    }
+  end
+
+  secret_key_path File.join('dev', 'rsa.private')
+  use_application_secret false
+  signing_method :rs256
 end

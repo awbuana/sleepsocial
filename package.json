@@ -1,0 +1,19 @@
+{
+  "name": "app",
+  "private": "true",
+  "scripts": {
+    "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "@tailwindcss/cli": "^4.1.11",
+    "autoprefixer": "^10.4.21",
+    "bootstrap": "^5.3.7",
+    "bootstrap-icons": "^1.13.1",
+    "nodemon": "^3.1.10",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "sass": "^1.89.2",
+    "tailwindcss": "^4.1.11"
+  }
+}

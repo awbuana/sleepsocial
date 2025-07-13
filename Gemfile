@@ -69,3 +69,11 @@ group :development, :test do
 end
 
 gem "simplecov", require: false, group: :test
+
+gem "devise", "~> 4.9"
+
+gem "cssbundling-rails", "~> 1.4"
+
+gem "sprockets-rails", "~> 3.5"
+
+gem "sassc-rails", "~> 2.1"
