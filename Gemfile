@@ -6,6 +6,9 @@ gem "rails", "~> 8.0.2"
 gem "mysql2", ">= 0.5.5"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
+# Doorkeeper (Oauth2)
+gem 'doorkeeper', "~> 5.8"
+gem 'doorkeeper-jwt', "~> 0.4"
 
 gem "redis-client"
 
@@ -66,3 +69,11 @@ group :development, :test do
 end
 
 gem "simplecov", require: false, group: :test
+
+gem "devise", "~> 4.9"
+
+gem "cssbundling-rails", "~> 1.4"
+
+gem "sprockets-rails", "~> 3.5"
+
+gem "sassc-rails", "~> 2.1"

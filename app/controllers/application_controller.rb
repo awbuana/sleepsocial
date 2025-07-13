@@ -1,6 +1,8 @@
-class ApplicationController < ActionController::API
+class ApplicationController < ActionController::Base
   include ErrorHandling
 
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  
   def current_user
     return @current_user if defined?(@current_user)
 
@@ -9,7 +11,7 @@ class ApplicationController < ActionController::API
     @current_user = if user_id.present?
       User.find(user_id)
     else
-      nil
+      super
     end
   end
 
@@ -48,5 +50,17 @@ class ApplicationController < ActionController::API
     pagination_params = permitted
     pagination_params.merge!(order: { id: :desc })
     pagination_params
+  end
+
+  protected
+
+  # Devise
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :email, :password, :password_confirmation])
+  end
+
+  # Doorkeeper methods
+  def current_resource_owner
+    User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
   end
 end

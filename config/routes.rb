@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  use_doorkeeper
+
+  devise_for :users, path: 'accounts'
+
   resources :sleep_logs, path: "sleep-logs" do
     patch "clock-out", on: :member
   end
